@@ -8,6 +8,7 @@ def connect_db():
     return sqlite3.connect('static/sp_config.db')
 
 def load_db(app):
+    
     spectro_pointer_config = {}
     spectro_pointer_config['use_raspberry']             = int(USE_RASPBERRY)
     spectro_pointer_config['correct_vertical_camera']   = int(CORRECT_VERTICAL_CAMERA)
@@ -17,12 +18,22 @@ def load_db(app):
     spectro_pointer_config['enable_photo']              = int(ENABLE_PHOTO)
     spectro_pointer_config['enable_video']              = int(ENABLE_VIDEO)
     spectro_pointer_config['record_seconds']            = int(RECORD_SECONDS)
-
+    
+    # Create list of tuples with the config data
+    config_data = [(spectro_pointer_config['use_raspberry'], 
+                    spectro_pointer_config['correct_vertical_camera'], 
+                    spectro_pointer_config['correct_horizontal_camera'], 
+                    spectro_pointer_config['center_radius'], 
+                    spectro_pointer_config['show_center_circle'], 
+                    spectro_pointer_config['enable_photo'], 
+                    spectro_pointer_config['enable_video'], 
+                    spectro_pointer_config['record_seconds']),
+                  ]
 
     with app.app_context():
         conn = connect_db()
         c = conn.cursor()
-        c.execute("INSERT INTO sp_config (USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS) VALUES (?,?,?,?,?,?,?,?)",(spectro_pointer_config['use_raspberry'],spectro_pointer_config['correct_vertical_camera'],spectro_pointer_config['correct_horizontal_camera'],spectro_pointer_config['center_radius'],spectro_pointer_config['show_center_circle'],spectro_pointer_config['enable_photo'],spectro_pointer_config['enable_video'],spectro_pointer_config['record_seconds']))
+        c.execute("INSERT INTO sp_config VALUES (?,?,?,?,?,?,?,?)", config_data)
         conn.commit()
         conn.close()
 
@@ -30,11 +41,14 @@ def init_db(app):
     conn = connect_db()
     c = conn.cursor()
     try:
-        c.execute('create table sp_config (USE_RASPBERRY int,CORRECT_VERTICAL_CAMERA int,CORRECT_HORIZONTAL_CAMERA int,CENTER_RADIUS int,SHOW_CENTER_CIRCLE int,ENABLE_PHOTO int,ENABLE_VIDEO int,RECORD_SECONDS int)')
+        c.execute('''create table sp_config (USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
+                                             CORRECT_HORIZONTAL_CAMERA int, CENTER_RADIUS int,
+                                             SHOW_CENTER_CIRCLE int, ENABLE_PHOTO int,
+                                             ENABLE_VIDEO int,RECORD_SECONDS int)''')
         load_db(app)
 
     except sqlite3.OperationalError as e:
-        print 'table movies already exists' in str(e)
+        print 'table sp_config already exists' in str(e)
     conn.commit()
     conn.close()
 
