@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container-fluid">
+    <div class="row bg-dark text-white shadow">
+        <h4 class='pl-3'>Spectro-Pointer Configurations</h4>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <div class="row mt-5 ml-5">
+                </div>
+                <div class="row mt-5 ml-5">
+                    <img src="{{ url_for('video_feed') }}" style="width: 400px; height: 400px;">
+                </div>
+            </div>
+            <div class="col-6">
+                <form method='POST' action='/config' enctype='multipart/form-data'>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.use_raspberry.label }}
+                        {{ form.use_raspberry(size=64,class="form-control") }}
+                        {% for error in form.use_raspberry.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.correct_vertical_camera.label }}
+                        {{ form.correct_vertical_camera(size=64, class="form-control") }}
+                        {% for error in form.correct_vertical_camera.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.correct_horizontal_camera.label }}
+                        {{ form.correct_horizontal_camera(size=64,class="form-control") }}
+                        {% for error in form.correct_horizontal_camera.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.center_radius.label }}
+                        {{ form.center_radius(size=64,class="form-control") }}
+                        {% for error in form.center_radius.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.show_center_circle.label }}
+                        {{ form.show_center_circle(size=64,class="form-control") }}
+                        {% for error in form.show_center_circle.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.enable_photo.label }}
+                        {{ form.enable_photo(size=64,class="form-control") }}
+                        {% for error in form.enable_photo.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.enable_video.label }}
+                        {{ form.enable_video(size=64,class="form-control") }}
+                        {% for error in form.enable_video.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.record_seconds.label }}
+                        {{ form.record_seconds(size=64,class="form-control") }}
+                        {% for error in form.record_seconds.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary mt-2 border-dark text-white" style="background:#5c6e64;">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
