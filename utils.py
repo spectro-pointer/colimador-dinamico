@@ -7,6 +7,16 @@ DATABASE = './static/sp_config.db'
 def connect_db():
     return sqlite3.connect('static/sp_config.db')
 
+def delete_db(app):
+
+    # Insert tuple with config data into database
+    with app.app_context():
+        conn = connect_db()
+        c = conn.cursor()
+        c.execute("DELETE FROM sp_config")
+        conn.commit()
+        conn.close()
+
 def load_db(app):
     
     spectro_pointer_config = {}
@@ -20,15 +30,14 @@ def load_db(app):
     spectro_pointer_config['record_seconds']            = int(RECORD_SECONDS)
     
     # Create tuple with the config data
-    config_data = (spectro_pointer_config['use_raspberry'], 
-                    spectro_pointer_config['correct_vertical_camera'], 
-                    spectro_pointer_config['correct_horizontal_camera'], 
-                    spectro_pointer_config['center_radius'], 
-                    spectro_pointer_config['show_center_circle'], 
-                    spectro_pointer_config['enable_photo'], 
-                    spectro_pointer_config['enable_video'], 
+    config_data = ( spectro_pointer_config['use_raspberry'],
+                    spectro_pointer_config['correct_vertical_camera'],
+                    spectro_pointer_config['correct_horizontal_camera'],
+                    spectro_pointer_config['center_radius'],
+                    spectro_pointer_config['show_center_circle'],
+                    spectro_pointer_config['enable_photo'],
+                    spectro_pointer_config['enable_video'],
                     spectro_pointer_config['record_seconds'])
-
     # Insert tuple with config data into database
     with app.app_context():
         conn = connect_db()

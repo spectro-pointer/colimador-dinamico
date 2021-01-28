@@ -80,9 +80,25 @@ def create_app(configfile=None):
             form.enable_photo.render_kw                  = {'placeholder':get_sp_config('ENABLE_PHOTO',app)}
             form.enable_video.render_kw                  = {'placeholder':get_sp_config('ENABLE_VIDEO',app)}
             form.record_seconds.render_kw                = {'placeholder':get_sp_config('RECORD_SECONDS',app)}
+            form.use_raspberry.label                     = 'USE RASPBERRY:'
+            form.correct_vertical_camera.label           = 'CORRECT VERTICAL CAMERA:'
+            form.correct_horizontal_camera.label         = 'CORRECT HORIZONTAL CAMERA:'
+            form.center_radius.label                     = 'CENTER RADIUS:'
+            form.show_center_circle.label                = 'SHOW CENTER CIRCLE:'
+            form.enable_photo.label                      = 'ENABLE PHOTO:'
+            form.enable_video.label                      = 'ENABLE VIDEO:'
+            form.record_seconds.label                    = 'RECORD SECONDS:'
         return render_template("config.html",form=form)
 
-
+    @app.route("/default",methods=['GET','POST'])
+    def set_default_config():
+        if request.method == 'POST':
+            with lock:
+                delete_db(app)
+                load_db(app)
+            return redirect(url_for('set_config'))
+        else:
+            return redirect(url_for('set_config'))
     return app
 
 

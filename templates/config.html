@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block main_content %}
-<div class="container-fluid">
-    <div class="row bg-dark text-white shadow">
-        <h4 class='pl-3'>Spectro-Pointer Configurations</h4>
-    </div>
+<form method='POST' action='/config' enctype='multipart/form-data'>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-6">
-                <div class="row mt-5 ml-5">
+        <div class="row bg-sp text-white shadow py-2 d-flex mb-2">
+            <h4 class='pl-3'>Spectro-Pointer Configurations</h4>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <div class="row mt-5 ml-5">
+                    </div>
+                    <div class="row mt-5 ml-5">
+                        <img src="{{ url_for('video_feed') }}" style="width: 400px; height: 400px;">
+                    </div>
                 </div>
-                <div class="row mt-5 ml-5">
-                    <img src="{{ url_for('video_feed') }}" style="width: 400px; height: 400px;">
-                </div>
-            </div>
-            <div class="col-6">
-                <form method='POST' action='/config' enctype='multipart/form-data'>
+                <div class="col-6">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
                         {{ form.use_raspberry.label }}
@@ -72,8 +72,68 @@
                         {% for error in form.record_seconds.errors %}
                         <span style="color: red;">{{ error }}</span>
                         {% endfor %}
-                    
-                    <button type="submit" class="btn btn-primary mt-2 border-dark text-white" style="background:#5c6e64;">Submit</button>
+
+                    <div class="row">
+                        <div class="col-6 mt-2 mb-3">
+                            <button type="button" class="btn btn-primary bg-sp border-white" data-toggle="modal" data-target="#DefaultConfig">
+                                Default Config
+                            </button>
+                        </div>
+
+                        <div class="col-6 mt-2 mb-3 d-flex flex-row-reverse">
+                            <button type="button" class="btn btn-primary bg-sp border-white" data-toggle="modal" data-target="#UpdateConfig">
+                                Actualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="UpdateConfig" tabindex="-1" role="dialog" aria-labelledby="ClientModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Actualizar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Estas a punto de actualizar las configuraciones
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-danger">Actualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="DefaultConfig" tabindex="-1" role="dialog" aria-labelledby="ClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Default</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Estas a punto de actualizar las configuraciones
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <form method='POST' action='{{ url_for('set_default_config') }}' enctype='multipart/form-data'>
+                    <div class="col-6 mt-2 mb-3">
+                        <button type="submit" class="btn btn-primary bg-sp border-white">
+                            Actualizar
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
