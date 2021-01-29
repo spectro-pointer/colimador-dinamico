@@ -57,7 +57,7 @@ def init_db(app):
         load_db(app)
 
     except sqlite3.OperationalError as e:
-        print 'table sp_config already exists' in str(e)
+        print('table sp_config already exists' in str(e))
     conn.commit()
     conn.close()
 
