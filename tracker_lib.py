@@ -308,7 +308,10 @@ def obtain_single_contour(b_frame):
     Obtain the x and y coordinates of a single contour.
     When none is found, it returns: (-1, -1)
     """
-    contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    try:
+        contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    except ValueError:
+        _, contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cx, cy = (-1, -1)  # When none is found, a negative coordinates are returned.
     for blob in contours:
         M = cv2.moments(blob)
