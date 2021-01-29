@@ -44,7 +44,7 @@ def create_app(configfile=None):
     @app.route("/")
     def index():
         # return the rendered template
-        return render_template("index.html")
+        return redirect(url_for('set_config'))
 
     @app.route("/video_feed")
     def video_feed():

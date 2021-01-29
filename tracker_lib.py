@@ -54,8 +54,8 @@ else:
         from picamera import PiCamera
         PiCamera.ISO = 800
     except ImportError:
-#       # print "Error: picamera module not recognized. Make sure you are using a Raspberry."
-#       # print "Also make sure that you have installed the following module: pip install picamera[array]"
+        print("Error: picamera module not recognized. Make sure you are using a Raspberry.")
+        print("Also make sure that you have installed the following module: pip install picamera[array]")
         sys.exit(0)
 
 
@@ -85,7 +85,7 @@ def set_up_leds():
     if USE_RASPBERRY:
         for led in available_leds.values():
             if DEBUG:
-               print "led %i is configured as output" % led
+                print("led %i is configured as output" % led)
             GPIO.setup(led, GPIO.OUT)
 
 
@@ -97,9 +97,9 @@ def led_action(led, status):
     :return 0 when correctly, -1 when error.
     """
     if DEBUG:
-        print led, status
+        print(led, status)
     if led not in available_leds.values():
-        print "Led not found:", led
+        print("Led not found:", led)
         return -1
 
     if USE_RASPBERRY:
@@ -108,7 +108,7 @@ def led_action(led, status):
         elif status == "off":
             GPIO.output(led, GPIO.LOW)
         else:
-            print "Unknown command:", status
+            print("Unknown command:", status)
     return 0
 
 
@@ -126,20 +126,20 @@ def sequence_test():
     This function is used only to test the leds of the Raspberry Pi Board
     """
     global available_leds
-   # print sequence_test.__doc__
-   # print "yellow led will blink..."
+    print(sequence_test.__doc__)
+    print("yellow led will blink...")
     blink(available_leds["LED_YELLOW"])
 
-   # print "now red led will blink..."
+    print("now red led will blink...")
     blink(available_leds["LED_RED"])
 
-   # print "now the green led will blink in clockwise..."
+    print("now the green led will blink in clockwise...")
     blink(available_leds["LED_G_UP"])
     blink(available_leds["LED_G_RIGHT"])
     blink(available_leds["LED_G_DOWN"])
     blink(available_leds["LED_G_LEFT"])
 
-   # print "The sequence has concluded."
+    print("The sequence has concluded.")
 
 
 def set_up_camera():
@@ -147,7 +147,7 @@ def set_up_camera():
     Initializes Raspberry Pi Camera.
     :returns: (camera, stream)
     """
-    print "Press 2 to exit, 3 to stop, 4 to continue"
+    print("Press 2 to exit, 3 to stop, 4 to continue")
     try:
         camera = PiCamera()
 #        camera.roi (0.5,0.5,0.25,0.25)
@@ -155,7 +155,7 @@ def set_up_camera():
         stream = PiRGBArray(camera, size=SIZE)
         time.sleep(0.1)  # allow the camera to warmup
     except:
-        print "Error with Raspberry Pi Camera"
+        print("Error with Raspberry Pi Camera")
         sys.exit(0)
     return camera, stream
 
@@ -170,7 +170,7 @@ def capture_frame(camera, stream):
         camera.capture(stream, format='bgr', use_video_port=True)
         frame = stream.array
     except:
-         print "Error with camera.capture"
+        print("Error with camera.capture")
     return frame
 
 
@@ -185,7 +185,7 @@ def wait_key():
     """
     keypressed = cv2.waitKey(1) & 0xFF
     if keypressed == ord('1'):
-        print "The program is exited by Key Interruption."
+        print("The program is exited by Key Interruption.")
         sys.exit()
     elif keypressed == ord('2'):
         cv2.destroyAllWindows()
@@ -197,20 +197,20 @@ def wait_key():
 
 
 def create_coordinates(image):
-    
-    cv2.line(image, (0, SIZE[1]/2), (SIZE[0], SIZE[1]/2), (255, 0, 0), 1)
-    cv2.line(image, (SIZE[0]/2, 0), (SIZE[0]/2, SIZE[1]), (255, 0, 0), 1)
-#    cv2.putText(image, "A+", (SIZE[0]/4, SIZE[1]/4), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-#    cv2.putText(image, "B+", (3 * SIZE[0]/4, SIZE[1]/4), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-#    cv2.putText(image, "A-", (SIZE[0]/4, 3 * SIZE[1]/4), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-#    cv2.putText(image, "B-", (3 * SIZE[0]/4, 3 * SIZE[1]/4), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-    cv2.circle(image, (SIZE[0]/2, SIZE[1]/2), CENTER_RADIUS, (80, 80, 200), 1)
+
+    cv2.line(image, (0, int(SIZE[1]/2)), (int(SIZE[0]), int(SIZE[1]/2)), (255, 0, 0), 1)
+    cv2.line(image, (int(SIZE[0]/2), 0), (int(SIZE[0]/2), int(SIZE[1])), (255, 0, 0), 1)
+    # cv2.putText(image, "A+", (int(SIZE[0]/4), int(SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
+    # cv2.putText(image, "B+", (int(3 * SIZE[0]/4), int(SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
+    # cv2.putText(image, "A-", (int(SIZE[0]/4), int(3 * SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
+    # cv2.putText(image, "B-", (int(3 * SIZE[0]/4), int(3 * SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
+    cv2.circle(image, (int(SIZE[0]/2), int(SIZE[1]/2)), CENTER_RADIUS, (80, 80, 200), 1)
     return image
 
 
 def show_center(image, cx, cy):
-    #print('CENTER_RADIUS',CENTER_RADIUS)
-    cv2.circle(image, (cx, cy), int(CENTER_RADIUS/4), (80, 200, 80), 1) # -1 hace  el relleno del circulo
+
+    cv2.circle(image, (cx, cy), int(CENTER_RADIUS/4), (80, 200, 80), -1) # -1 hace  el relleno del circulo
     return image
 
 
@@ -225,7 +225,7 @@ def camera_test():
             cv2.destroyAllWindows()
             break
 
-        #cv2.imshow("image", frame)
+        cv2.imshow("image", frame)
 
         if wait_key() == "break":
             break
@@ -251,7 +251,8 @@ def check_quadrant(cx, cy):
     # print(returnString)                    ### gustavo
 
     # arduino.write(returnString + '\n')    ### gustavo
-
+    # When no contour has been detected:
+    # It turns on LED_YELLOW and returns ""
     if cx < 0 or cy < 0:
         led_action(available_leds["LED_YELLOW"], "on")
         led_action(available_leds["LED_G_LEFT"], "off")
@@ -307,9 +308,12 @@ def obtain_single_contour(b_frame):
     Obtain the x and y coordinates of a single contour.
     When none is found, it returns: (-1, -1)
     """
-    _, contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    cx, cy = (90,90)  # When none is found, a negative coordinates are returned.
+    try:
+        contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    except ValueError:
+        _, contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # cx, cy = (90, 90)  # NOTE: This was replaced with negative coordinates
+    cx, cy = (-1, -1)  # When none is found, a negative coordinates are returned.
     for blob in contours:
         M = cv2.moments(blob)
         if M['m00'] != 0:
@@ -337,7 +341,7 @@ def record_action(place, frame, take_photo, take_video):
     elif not contour_appeared:
         contour_appeared = True
         object_appeared = datetime.datetime.now()
-      #  print "A contour has appeared."
+        print("A contour has appeared.")
 
         if take_photo:  # The image is saved if it is explicitly told.
             # When the contour appears a photo is taken
@@ -352,7 +356,7 @@ def record_action(place, frame, take_photo, take_video):
     # A contour is centered
     elif not contour_centered and place == "x-center y-center":
         contour_centered = True
-        print "A contour is centered."
+        print("A contour is centered.")
 
         if take_photo:
             # When the contour appears a photo is taken
@@ -369,13 +373,13 @@ def record_action(place, frame, take_photo, take_video):
                 video_writer.write(frame)
             else:
                 # The video finishes after 30 seconds.
-        #        print "The video has been saved."
+                print("The video has been saved.")
                 video_writer.write(frame)
                 video_writer.release()
                 record_video = "off"
         elif record_video == "finish":
             # The video finishes when it has been centered.
-         #   print "The video has been saved."
+            print("The video has been saved.")
             video_writer.write(frame)
             video_writer.release()
             record_video = "off"
@@ -497,7 +501,7 @@ def show_images(lst, size):
     for frame, name in lst:
         resized_frame = cv2.resize(frame, size)
         cv2.imshow(name, resized_frame)
-        cv2.moveWindow(name, size[0]*(counter % 4), (size[1]+35)*((counter / 4) % 3))
+        cv2.moveWindow(name, int(size[0]*(counter % 4)), int((size[1]+35)*((counter / 4) % 3)))
         counter += 1
 
 def fun():
@@ -511,7 +515,7 @@ def fun():
 
     # when code ends, the GPIO is freed...
     GPIO.cleanup()
-   # print "The program ended successfully."
+    print("The program ended successfully.")
 
 if __name__ == "__main__":
     fun()
