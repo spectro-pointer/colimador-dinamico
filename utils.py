@@ -80,89 +80,71 @@ def get_db():
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
+# Function for sql UPDATE statement string building
+def sql_stat_build(str1,str2,cont,listM,valueSP):
+    if cont == 0:
+        str1 += str2
+    else:
+        str1 += "," + str2
+    listM.append(int(valueSP))
+    return str1
+
 def set_sp_config(app,**spectro_pointer_config):
     with app.app_context():
         conn = connect_db()
         # Aux variable for value control
         contVal = 0
         # Create string were SQL statements will be added
-        s = "UPDATE sp_config SET "
+        string_sql = "UPDATE sp_config SET "
         # Create empty list were values to update will be appended
-        l = []
+        l_sp_config = []
         
         # Check every possible value, if true, append value and extend SQL statement
         if spectro_pointer_config['use_raspberry']:            
-            s = s + "USE_RASPBERRY=?"
-            l.append(int(spectro_pointer_config['use_raspberry']))
+            string_sql = string_sql + "USE_RASPBERRY=?"
+            l_sp_config.append(int(spectro_pointer_config['use_raspberry']))
             contVal+=1
 
         if spectro_pointer_config['correct_vertical_camera']:
             s2 = "CORRECT_VERTICAL_CAMERA=?"
-            if contVal == 0:
-                s = s + s2
-            else:
-                s = s + "," + s2         
-            l.append(int(spectro_pointer_config['correct_vertical_camera']))
+            string_sql = sql_stat_build(string_sql,s2,contVal,l_sp_config,spectro_pointer_config['correct_vertical_camera'])
             contVal+=1
 
         if spectro_pointer_config['correct_horizontal_camera']:
             s3 = "CORRECT_HORIZONTAL_CAMERA=?"
-            if contVal == 0:
-                s = s + s3
-            else:
-                s = s + "," + s3
-            l.append(int(spectro_pointer_config['correct_horizontal_camera']))
+            string_sql = sql_stat_build(string_sql,s3,contVal,l_sp_config,spectro_pointer_config['correct_horizontal_camera'])
             contVal+=1
 
         if spectro_pointer_config['center_radius']:
             s4 = "CENTER_RADIUS=?"
-            if contVal == 0:
-                s = s + s4
-            else:
-                s = s + "," + s4
-            l.append(int(spectro_pointer_config['center_radius']))
+            string_sql = sql_stat_build(string_sql,s4,contVal,l_sp_config,spectro_pointer_config['center_radius'])
             contVal+=1
 
         if spectro_pointer_config['show_center_circle']:
             s5 = "SHOW_CENTER_CIRCLE=?"
-            if contVal == 0:
-                s = s + s5
-            else:
-                s = s + "," + s5
-            l.append(int(spectro_pointer_config['show_center_circle']))
+            string_sql = sql_stat_build(string_sql,s5,contVal,l_sp_config,spectro_pointer_config['show_center_circle'])
             contVal+=1
 
         if spectro_pointer_config['enable_photo']:
             s6 = "ENABLE_PHOTO=?"
-            if contVal == 0:
-                s = s + s6
-            else:
-                s = s + "," + s6
-            l.append(int(spectro_pointer_config['enable_photo']))
+            string_sql = sql_stat_build(string_sql,s6,contVal,l_sp_config,spectro_pointer_config['enable_photo'])
             contVal+=1
 
         if spectro_pointer_config['enable_video']:
             s7 = "ENABLE_VIDEO=?"
-            if contVal == 0:
-                s = s + s7
-            else:
-                s = s + "," + s7
-            l.append(int(spectro_pointer_config['enable_video']))
+            string_sql = sql_stat_build(string_sql,s7,contVal,l_sp_config,spectro_pointer_config['enable_video'])
             contVal+=1
             
         if spectro_pointer_config['record_seconds']:
             s8 = "RECORD_SECONDS=?"
-            if contVal == 0:
-                s = s + s8
-            else:
-                s = s + "," + s8
-            l.append(int(spectro_pointer_config['record_seconds']))
+            string_sql = sql_stat_build(string_sql,s8,contVal,l_sp_config,spectro_pointer_config['record_seconds'])
             contVal+=1
+        
         # Convert list into tuple
-        l = tuple(l)
+        l_sp_config = tuple(l_sp_config)
         
         # Execute UPDATE statement
-        conn.execute('"'+s+'"',l)
+        conn.execute('"'+string_sql+'"',l_sp_config)
 
         conn.commit()
         conn.close()
