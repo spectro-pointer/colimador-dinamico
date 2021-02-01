@@ -19,3 +19,4 @@ if [ -z  $PORT ]; then
     PORT=8081
 fi
 python3 star_detector.py --ip $IP --port $PORT
+
