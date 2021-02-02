@@ -15,5 +15,5 @@ To run the app and create a web interface please run the following command:
 ```
 
 Valid options:
- -i : Ip for the server. E.g. -i 0.0.0.0
- -p : Port for the server. E.g. -p 8081
+ - -i : Ip for the server. E.g. -i 0.0.0.0
+ - -p : Port for the server. E.g. -p 8081
