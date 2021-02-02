@@ -144,7 +144,7 @@ def set_sp_config(app,**spectro_pointer_config):
         l_sp_config = tuple(l_sp_config)
         
         # Execute UPDATE statement
-        conn.execute('"'+string_sql+'"',l_sp_config)
+        conn.execute(string_sql,l_sp_config)
 
         conn.commit()
         conn.close()
