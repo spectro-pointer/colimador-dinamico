@@ -82,24 +82,3 @@ target/
 
 local
 *.nfs*
-
-# experiments results
-results/*/*/*.csv
-results/*/*/*.pkl
-
-# recommendations process subfolders used in doc
-recommendation_process/*/
-
-# Old notebooks
-notebooks/old_notebooks/*
-old/*
-
-# Weights and biases
-notebooks/price_suggestion/wandb
-notebooks/price_suggestion/checkpoints
-notebooks/price_suggestion/forecast
-notebooks/price_suggestion/logs
-notebooks/price_suggestion/logs_save
-
-# Notebooks results
-results/
