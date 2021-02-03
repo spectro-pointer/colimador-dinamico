@@ -20,36 +20,24 @@ def delete_db(app):
 def load_db(app):
     
     spectro_pointer_config = {}
-    # Create empty list for appending every value
-    config_data = list()
-
     spectro_pointer_config['use_raspberry']             = int(USE_RASPBERRY)
-    config_data.append(spectro_pointer_config['use_raspberry'])
-
     spectro_pointer_config['correct_vertical_camera']   = int(CORRECT_VERTICAL_CAMERA)
-    config_data.append(spectro_pointer_config['correct_vertical_camera'])
-    
     spectro_pointer_config['correct_horizontal_camera'] = int(CORRECT_HORIZONTAL_CAMERA)
-    config_data.append(spectro_pointer_config['correct_horizontal_camera'])
-    
     spectro_pointer_config['center_radius']             = int(CENTER_RADIUS)
-    config_data.append(spectro_pointer_config['center_radius'])
-    
     spectro_pointer_config['show_center_circle']        = int(SHOW_CENTER_CIRCLE)
-    config_data.append(spectro_pointer_config['show_center_circle'])
-    
     spectro_pointer_config['enable_photo']              = int(ENABLE_PHOTO)
-    config_data.append(spectro_pointer_config['enable_photo'])
-    
     spectro_pointer_config['enable_video']              = int(ENABLE_VIDEO)
-    config_data.append(spectro_pointer_config['enable_video'])
-    
     spectro_pointer_config['record_seconds']            = int(RECORD_SECONDS)
-    config_data.append(spectro_pointer_config['record_seconds'])
     
-    #  Transform config_data list into a tuple
-    config_data = tuple(config_data)
-
+    # Create tuple with the config data
+    config_data = ( spectro_pointer_config['use_raspberry'],
+                    spectro_pointer_config['correct_vertical_camera'],
+                    spectro_pointer_config['correct_horizontal_camera'],
+                    spectro_pointer_config['center_radius'],
+                    spectro_pointer_config['show_center_circle'],
+                    spectro_pointer_config['enable_photo'],
+                    spectro_pointer_config['enable_video'],
+                    spectro_pointer_config['record_seconds'])
     # Insert tuple with config data into database
     with app.app_context():
         conn = connect_db()
@@ -69,7 +57,7 @@ def init_db(app):
         load_db(app)
 
     except sqlite3.OperationalError as e:
-        print('table sp_config already exists' in str(e))
+        print( 'table sp_config already exists' in str(e))
     conn.commit()
     conn.close()
 
@@ -80,61 +68,31 @@ def get_db():
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
-# Function for sql UPDATE statement string building
-def sql_stat_build(str1,str2,cont,listM,valueSP):
-    if cont == 0:
-        str1 += str2
-    else:
-        str1 += "," + str2
-    listM.append(int(valueSP))
-    return str1
-
 def set_sp_config(app,**spectro_pointer_config):
     with app.app_context():
         conn = connect_db()
-        # Aux variable for value control
-        contVal = 0
-        # Create string were SQL statements will be added
-        string_sql = "UPDATE sp_config SET "
-        # Create empty list were values to update will be appended
-        l_sp_config = []
-        
-        # Check every possible value, if true, append value and extend SQL statement
-        if spectro_pointer_config['use_raspberry']:            
-            string_sql = string_sql + "USE_RASPBERRY=?"
-            l_sp_config.append(int(spectro_pointer_config['use_raspberry']))
-            contVal+=1
+
+        if spectro_pointer_config['use_raspberry']:
+            conn.execute("UPDATE sp_config SET USE_RASPBERRY=?",(int(spectro_pointer_config['use_raspberry']),))
 
         if spectro_pointer_config['correct_vertical_camera']:
-            s2 = "CORRECT_VERTICAL_CAMERA=?"
-            string_sql = sql_stat_build(string_sql,s2,contVal,l_sp_config,spectro_pointer_config['correct_vertical_camera'])
-            contVal+=1
+            conn.execute("UPDATE sp_config SET CORRECT_VERTICAL_CAMERA=?",(int(spectro_pointer_config['correct_vertical_camera']),))
 
         if spectro_pointer_config['correct_horizontal_camera']:
-            s3 = "CORRECT_HORIZONTAL_CAMERA=?"
-            string_sql = sql_stat_build(string_sql,s3,contVal,l_sp_config,spectro_pointer_config['correct_horizontal_camera'])
-            contVal+=1
+            conn.execute("UPDATE sp_config SET CORRECT_HORIZONTAL_CAMERA=?",(int(spectro_pointer_config['correct_horizontal_camera']),))
 
         if spectro_pointer_config['center_radius']:
-            s4 = "CENTER_RADIUS=?"
-            string_sql = sql_stat_build(string_sql,s4,contVal,l_sp_config,spectro_pointer_config['center_radius'])
-            contVal+=1
+            conn.execute("UPDATE sp_config SET CENTER_RADIUS=?",(int(spectro_pointer_config['center_radius']),))
 
         if spectro_pointer_config['show_center_circle']:
-            s5 = "SHOW_CENTER_CIRCLE=?"
-            string_sql = sql_stat_build(string_sql,s5,contVal,l_sp_config,spectro_pointer_config['show_center_circle'])
-            contVal+=1
+            conn.execute("UPDATE sp_config SET SHOW_CENTER_CIRCLE=?",(int(spectro_pointer_config['show_center_circle']),))
 
         if spectro_pointer_config['enable_photo']:
-            s6 = "ENABLE_PHOTO=?"
-            string_sql = sql_stat_build(string_sql,s6,contVal,l_sp_config,spectro_pointer_config['enable_photo'])
-            contVal+=1
+            conn.execute("UPDATE sp_config SET ENABLE_PHOTO=?",(int(spectro_pointer_config['enable_photo']),))
 
         if spectro_pointer_config['enable_video']:
-            s7 = "ENABLE_VIDEO=?"
-            string_sql = sql_stat_build(string_sql,s7,contVal,l_sp_config,spectro_pointer_config['enable_video'])
-            contVal+=1
-            
+            conn.execute("UPDATE sp_config SET ENABLE_VIDEO=?",(int(spectro_pointer_config['enable_video']),))
+
         if spectro_pointer_config['record_seconds']:
             s8 = "RECORD_SECONDS=?"
             string_sql = sql_stat_build(string_sql,s8,contVal,l_sp_config,spectro_pointer_config['record_seconds'])
@@ -145,7 +103,6 @@ def set_sp_config(app,**spectro_pointer_config):
         
         # Execute UPDATE statement
         conn.execute(string_sql,l_sp_config)
-
         conn.commit()
         conn.close()
 
