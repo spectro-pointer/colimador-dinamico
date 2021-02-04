@@ -463,7 +463,7 @@ def camera_loop(app):
             lst = list()
             lst.append((frame, "frame"))
             with lock:
-                outputFrame = frame.copy()
+                outputFrame = tuple([frame.copy(),b_frame.copy()])
             show_images(lst, SIZE)
         # cv2.imshow("frame", frame)
 
@@ -474,7 +474,7 @@ def camera_loop(app):
         stream.truncate()
     cv2.destroyAllWindows()
 
-def generate():
+def generate(select_source):
     # grab global references to the output frame and lock variables
     global outputFrame, lock
     # loop over frames from the output stream
@@ -486,7 +486,10 @@ def generate():
             if outputFrame is None:
                 continue
             # encode the frame in JPEG format
-            flag, encodedImage = cv2.imencode(".jpg", outputFrame)
+            if select_source == 'VIDEO':
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[0])
+            if select_source == 'THR':
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
 
         # yield the output frame in the byte format
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + encodedImage.tostring() + b'\r\n')

@@ -11,19 +11,6 @@ from config import *
 from forms import ConfigForm
 from time import sleep
 
-# initialize the output frame and a lock used to ensure thread-safe
-# exchanges of the output frames (useful when multiple browsers/tabs
-# are viewing the stream)
-outputFrame = None
-update_parameters_en = False
-# lock = threading.Lock()
-# initialize a flask object
-#app = Flask(__name__, template_folder="./")
-# initialize the video stream and allow the camera sensor to
-# warmup
-#vs = VideoStream(usePiCamera=1).start()
-
-
 def create_app(configfile=None):
 
     app = Flask(
@@ -50,7 +37,13 @@ def create_app(configfile=None):
     def video_feed():
         # return the response generated along with the specific media
         # type (mime type)
-        return Response(generate(),mimetype = "multipart/x-mixed-replace; boundary=frame")
+        return Response(generate('VIDEO'),mimetype = "multipart/x-mixed-replace; boundary=frame")
+
+    @app.route("/thr_feed")
+    def thr_feed():
+        # return the response generated along with the specific media
+        # type (mime type)
+        return Response(generate('THR'),mimetype = "multipart/x-mixed-replace; boundary=frame")
 
     @app.route("/config", methods=["GET","POST"])
     def set_config():
