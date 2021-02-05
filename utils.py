@@ -28,25 +28,28 @@ def load_db(app):
 
     spectro_pointer_config['correct_vertical_camera']   = int(CORRECT_VERTICAL_CAMERA)
     config_data.append(spectro_pointer_config['correct_vertical_camera'])
-    
+
     spectro_pointer_config['correct_horizontal_camera'] = int(CORRECT_HORIZONTAL_CAMERA)
     config_data.append(spectro_pointer_config['correct_horizontal_camera'])
-    
+
     spectro_pointer_config['center_radius']             = int(CENTER_RADIUS)
     config_data.append(spectro_pointer_config['center_radius'])
-    
+
     spectro_pointer_config['show_center_circle']        = int(SHOW_CENTER_CIRCLE)
     config_data.append(spectro_pointer_config['show_center_circle'])
-    
+
     spectro_pointer_config['enable_photo']              = int(ENABLE_PHOTO)
     config_data.append(spectro_pointer_config['enable_photo'])
-    
+
     spectro_pointer_config['enable_video']              = int(ENABLE_VIDEO)
     config_data.append(spectro_pointer_config['enable_video'])
-    
+
     spectro_pointer_config['record_seconds']            = int(RECORD_SECONDS)
     config_data.append(spectro_pointer_config['record_seconds'])
-    
+
+    spectro_pointer_config['threshold']            = int(THRESHOLD)
+    config_data.append(spectro_pointer_config['threshold'])
+
     #  Transform config_data list into a tuple
     config_data = tuple(config_data)
 
@@ -54,7 +57,7 @@ def load_db(app):
     with app.app_context():
         conn = connect_db()
         c = conn.cursor()
-        c.execute("INSERT INTO sp_config VALUES (?,?,?,?,?,?,?,?)", config_data)
+        c.execute("INSERT INTO sp_config VALUES (?,?,?,?,?,?,?,?,?)", config_data)
         conn.commit()
         conn.close()
 
@@ -65,7 +68,7 @@ def init_db(app):
         c.execute('''create table sp_config (USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
                                              CORRECT_HORIZONTAL_CAMERA int, CENTER_RADIUS int,
                                              SHOW_CENTER_CIRCLE int, ENABLE_PHOTO int,
-                                             ENABLE_VIDEO int,RECORD_SECONDS int)''')
+                                             ENABLE_VIDEO int,RECORD_SECONDS int, THRESHOLD int)''')
         load_db(app)
 
     except sqlite3.OperationalError as e:
@@ -134,12 +137,18 @@ def set_sp_config(app,**spectro_pointer_config):
             s7 = "ENABLE_VIDEO=?"
             string_sql = sql_stat_build(string_sql,s7,contVal,l_sp_config,spectro_pointer_config['enable_video'])
             contVal+=1
-            
+
         if spectro_pointer_config['record_seconds']:
             s8 = "RECORD_SECONDS=?"
             string_sql = sql_stat_build(string_sql,s8,contVal,l_sp_config,spectro_pointer_config['record_seconds'])
             contVal+=1
-        
+
+        if spectro_pointer_config['threshold']:
+            s9 = "THRESHOLD=?"
+            string_sql = sql_stat_build(string_sql,s9,contVal,l_sp_config,spectro_pointer_config['threshold'])
+            contVal+=1
+
+
         # Convert list into tuple
         l_sp_config = tuple(l_sp_config)
         

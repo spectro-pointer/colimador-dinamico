@@ -385,7 +385,7 @@ def record_action(place, frame, take_photo, take_video):
             record_video = "off"
 
 def update_params(app):
-    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS
+    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH
 
     USE_RASPBERRY             = get_sp_config('USE_RASPBERRY',app)
     CORRECT_VERTICAL_CAMERA   = get_sp_config('CORRECT_VERTICAL_CAMERA',app)
@@ -395,12 +395,13 @@ def update_params(app):
     ENABLE_PHOTO              = get_sp_config('ENABLE_PHOTO',app)
     ENABLE_VIDEO              = get_sp_config('ENABLE_VIDEO',app)
     RECORD_SECONDS            = get_sp_config('RECORD_SECONDS',app)
+    TH                        = get_sp_config('THRESHOLD',app)
 
 def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH
     camera, stream = set_up_camera()
 
     # Global variables initialized.
@@ -408,8 +409,8 @@ def camera_loop(app):
     contour_centered = False
     record_video = "off"
     while True:
-        update_params(app)
-        TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
+        # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
+        #update_params(app)
 
         frame = capture_frame(camera, stream)
         if frame is None:
@@ -432,7 +433,7 @@ def camera_loop(app):
 
         # Change frame to grey color.
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	
+
         # Apply Threshold.
         _dummy, b_frame = cv2.threshold(gray_frame,TH, 255, cv2.THRESH_BINARY) ### gustavo
         cv2.imshow("threshold", b_frame)  ### gustavo

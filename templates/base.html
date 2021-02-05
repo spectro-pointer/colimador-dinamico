@@ -28,6 +28,8 @@
         }
         /* body { background: #a0b8ab !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
     </style>
+    {% block extra_style %}
+    {% endblock %}
   </head>
   <body id="main">
     {% block main_content %}

@@ -12,4 +12,5 @@ class ConfigForm(FlaskForm):
     enable_photo              = StringField('enable_photo', validators=[Length(max=64)])
     enable_video              = StringField('enable_video', validators=[Length(max=64)])
     record_seconds            = StringField('record_seconds', validators=[Length(max=64)])
+    threshold                 = StringField('threshold', validators=[Length(max=64)])
     submit                    = SubmitField('Actualizar')

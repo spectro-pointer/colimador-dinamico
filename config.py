@@ -22,7 +22,7 @@ CENTER_RADIUS = 20
 SHOW_CENTER_CIRCLE = True
 # Shows the center of the circle detected.
 
-#THRESHOLD = 50  # modificado se ajusta desde la ventana 
+THRESHOLD = 50  # modificado se ajusta desde la ventana 
 # Threshold of brightness of lights to be detected (Range 0: darkest - 255 brightest)
 
 # ---------------------------- OUTPUT FILES --------------------------------- #

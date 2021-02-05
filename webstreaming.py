@@ -61,8 +61,11 @@ def create_app(configfile=None):
                 spectro_pointer_config['enable_photo']              = form.enable_photo.data
                 spectro_pointer_config['enable_video']              = form.enable_video.data
                 spectro_pointer_config['record_seconds']            = form.record_seconds.data
+                spectro_pointer_config['threshold']                 = form.threshold.data
                 with lock:
                     set_sp_config(app,**spectro_pointer_config)
+                    update_params(app)
+
             return redirect(url_for('set_config'))
         else:
             form.use_raspberry.render_kw                 = {'placeholder':get_sp_config('USE_RASPBERRY',app)}
@@ -73,6 +76,7 @@ def create_app(configfile=None):
             form.enable_photo.render_kw                  = {'placeholder':get_sp_config('ENABLE_PHOTO',app)}
             form.enable_video.render_kw                  = {'placeholder':get_sp_config('ENABLE_VIDEO',app)}
             form.record_seconds.render_kw                = {'placeholder':get_sp_config('RECORD_SECONDS',app)}
+            form.threshold.render_kw                     = {'value':get_sp_config('THRESHOLD',app)}
             form.use_raspberry.label                     = 'USE RASPBERRY:'
             form.correct_vertical_camera.label           = 'CORRECT VERTICAL CAMERA:'
             form.correct_horizontal_camera.label         = 'CORRECT HORIZONTAL CAMERA:'
@@ -81,6 +85,7 @@ def create_app(configfile=None):
             form.enable_photo.label                      = 'ENABLE PHOTO:'
             form.enable_video.label                      = 'ENABLE VIDEO:'
             form.record_seconds.label                    = 'RECORD SECONDS:'
+            form.threshold.label                         = 'THRESHOLD:'
         return render_template("config.html",form=form)
 
     @app.route("/default",methods=['GET','POST'])
