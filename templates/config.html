@@ -136,7 +136,7 @@
 
                     <div class="slidecontainer form-group">
                         {{ form.threshold.label }} <span id="sel_threshold"></span>
-                        {{ form.threshold(type="range",min="1",max="100",class="slider form-control",id="thresholdRange") }}
+                        {{ form.threshold(type="range",min="1",max="255",class="slider form-control",id="thresholdRange") }}
                         {% for error in form.threshold.errors %}
                         <span style="color: red;">{{ error }}</span>
                         {% endfor %}
