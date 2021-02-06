@@ -50,6 +50,21 @@ def load_db(app):
     spectro_pointer_config['threshold']            = int(THRESHOLD)
     config_data.append(spectro_pointer_config['threshold'])
 
+    spectro_pointer_config['resolution']            = int(RESOLUTION)
+    config_data.append(spectro_pointer_config['resolution'])
+
+    spectro_pointer_config['framerate']            = int(FRAMERATE)
+    config_data.append(spectro_pointer_config['framerate'])
+
+    spectro_pointer_config['sensor_mode']            = int(SENSOR_MODE)
+    config_data.append(spectro_pointer_config['sensor_mode'])
+
+    spectro_pointer_config['shutter_speed']            = int(SHUTTER_SPEED)
+    config_data.append(spectro_pointer_config['shutter_speed'])
+
+    spectro_pointer_config['iso']            = int(ISO)
+    config_data.append(spectro_pointer_config['iso'])
+
     #  Transform config_data list into a tuple
     config_data = tuple(config_data)
 
@@ -57,7 +72,7 @@ def load_db(app):
     with app.app_context():
         conn = connect_db()
         c = conn.cursor()
-        c.execute("INSERT INTO sp_config VALUES (?,?,?,?,?,?,?,?,?)", config_data)
+        c.execute("INSERT INTO sp_config VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", config_data)
         conn.commit()
         conn.close()
 
@@ -65,10 +80,12 @@ def init_db(app):
     conn = connect_db()
     c = conn.cursor()
     try:
-        c.execute('''create table sp_config (USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
+        c.execute('''create table sp_config (id int, USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
                                              CORRECT_HORIZONTAL_CAMERA int, CENTER_RADIUS int,
                                              SHOW_CENTER_CIRCLE int, ENABLE_PHOTO int,
-                                             ENABLE_VIDEO int,RECORD_SECONDS int, THRESHOLD int)''')
+                                             ENABLE_VIDEO int,RECORD_SECONDS int, THRESHOLD int,
+                                             RESOLUTION text, FRAMERATE int, SENSOR_MODE int,
+                                             SHUTTER_SPEED int, ISO int, PRIMARY KEY(id))''')        
         load_db(app)
 
     except sqlite3.OperationalError as e:
@@ -148,6 +165,30 @@ def set_sp_config(app,**spectro_pointer_config):
             string_sql = sql_stat_build(string_sql,s9,contVal,l_sp_config,spectro_pointer_config['threshold'])
             contVal+=1
 
+        if spectro_pointer_config['resolution']:
+            s10 = "RESOLUTION=?"
+            string_sql = sql_stat_build(string_sql,s10,contVal,l_sp_config,spectro_pointer_config['resolution'])
+            contVal+=1
+
+        if spectro_pointer_config['framerate']:
+            s11 = "FRAMERATE=?"
+            string_sql = sql_stat_build(string_sql,s11,contVal,l_sp_config,spectro_pointer_config['framerate'])
+            contVal+=1
+
+        if spectro_pointer_config['sensor_mode']:
+            s12 = "SENSOR_MODE=?"
+            string_sql = sql_stat_build(string_sql,s12,contVal,l_sp_config,spectro_pointer_config['sensor_mode'])
+            contVal+=1
+
+        if spectro_pointer_config['shutter_speed']:
+            s13 = "SHUTTER_SPEED=?"
+            string_sql = sql_stat_build(string_sql,s13,contVal,l_sp_config,spectro_pointer_config['shutter_speed'])
+            contVal+=1
+
+        if spectro_pointer_config['iso']:
+            s14 = "ISO=?"
+            string_sql = sql_stat_build(string_sql,s14,contVal,l_sp_config,spectro_pointer_config['iso'])
+            contVal+=1
 
         # Convert list into tuple
         l_sp_config = tuple(l_sp_config)

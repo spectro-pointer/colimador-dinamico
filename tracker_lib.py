@@ -385,7 +385,7 @@ def record_action(place, frame, take_photo, take_video):
             record_video = "off"
 
 def update_params(app):
-    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH
+    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO
 
     USE_RASPBERRY             = get_sp_config('USE_RASPBERRY',app)
     CORRECT_VERTICAL_CAMERA   = get_sp_config('CORRECT_VERTICAL_CAMERA',app)
@@ -396,6 +396,11 @@ def update_params(app):
     ENABLE_VIDEO              = get_sp_config('ENABLE_VIDEO',app)
     RECORD_SECONDS            = get_sp_config('RECORD_SECONDS',app)
     TH                        = get_sp_config('THRESHOLD',app)
+    RESOLUTION                = get_sp_config('RESOLUTION',app)
+    FRAMERATE                 = get_sp_config('FRAMERATE',app)
+    SENSOR_MODE               = get_sp_config('SENSOR_MODE',app)
+    SHUTTER_SPEED             = get_sp_config('SHUTTER_SPEED',app)
+    ISO                       = get_sp_config('ISO',app)
 
 def camera_loop(app):
     """
