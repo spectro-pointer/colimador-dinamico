@@ -62,6 +62,14 @@ def create_app(configfile=None):
                 spectro_pointer_config['enable_video']              = form.enable_video.data
                 spectro_pointer_config['record_seconds']            = form.record_seconds.data
                 spectro_pointer_config['threshold']                 = form.threshold.data
+
+                spectro_pointer_config['resolution']                = form.resolution.data
+                spectro_pointer_config['framerate']                 = form.framerate.data
+                spectro_pointer_config['sensor_mode']               = form.sensor_mode.data
+                spectro_pointer_config['shutter_speed']             = form.shutter_speed.data
+                spectro_pointer_config['iso']                       = form.iso.data
+                
+
                 with lock:
                     set_sp_config(app,**spectro_pointer_config)
                     update_params(app)
@@ -77,6 +85,13 @@ def create_app(configfile=None):
             form.enable_video.render_kw                  = {'placeholder':get_sp_config('ENABLE_VIDEO',app)}
             form.record_seconds.render_kw                = {'placeholder':get_sp_config('RECORD_SECONDS',app)}
             form.threshold.render_kw                     = {'value':get_sp_config('THRESHOLD',app)}
+
+            form.resolution.render_kw                    = {'placeholder':get_sp_config('Select resolution',app)}
+            form.framerate.render_kw                     = {'placeholder':get_sp_config('FRAMERATE',app)}
+            form.sensor_mode.render_kw                   = {'placeholder':get_sp_config('SENSOR_MODE',app)}
+            form.shutter_speed.render_kw                 = {'placeholder':get_sp_config('SHUTTER_SPEED',app)}
+            form.iso.render_kw                           = {'placeholder':get_sp_config('ISO',app)}
+
             form.use_raspberry.label                     = 'USE RASPBERRY:'
             form.correct_vertical_camera.label           = 'CORRECT VERTICAL CAMERA:'
             form.correct_horizontal_camera.label         = 'CORRECT HORIZONTAL CAMERA:'
@@ -86,6 +101,13 @@ def create_app(configfile=None):
             form.enable_video.label                      = 'ENABLE VIDEO:'
             form.record_seconds.label                    = 'RECORD SECONDS:'
             form.threshold.label                         = 'THRESHOLD:'
+
+            form.resolution.label                        = 'RESOLUTION:'
+            form.framerate.label                         = 'FRAMERATE:'
+            form.sensor_mode.label                       = 'SENSOR_MODE:'
+            form.shutter_speed.label                     = 'SHUTTER_SPEED:'
+            form.iso.label                               = 'ISO:'
+
         return render_template("config.html",form=form)
 
     @app.route("/default",methods=['GET','POST'])

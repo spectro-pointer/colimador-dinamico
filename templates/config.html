@@ -141,6 +141,47 @@
                         <span style="color: red;">{{ error }}</span>
                         {% endfor %}
                     </div>
+                    <hr noshade="noshade" />
+                    <div class="form-group">
+                        {{ form.resolution.label }}
+                        {{ form.resolution(size=64,class="form-control",list="datalistOptions") }}
+                        <datalist id="datalistOptions">
+                          <option value="640x480">
+                          <option value="1280x720">
+                          <option value="1920x1080">
+                        </datalist>
+                        {% for error in form.resolution.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.framerate.label }}
+                        {{ form.framerate(size=64,class="form-control") }}
+                        {% for error in form.framerate.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.sensor_mode.label }}
+                        {{ form.sensor_mode(size=64,class="form-control") }}
+                        {% for error in form.sensor_mode.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.shutter_speed.label }}
+                        {{ form.shutter_speed(size=64,class="form-control") }}
+                        {% for error in form.shutter_speed.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.iso.label }}
+                        {{ form.iso(size=64,class="form-control") }}
+                        {% for error in form.iso.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </div>                    
 
                     <div class="row">
                         <div class="col-6 mt-2 mb-3">
