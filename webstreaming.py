@@ -76,21 +76,21 @@ def create_app(configfile=None):
 
             return redirect(url_for('set_config'))
         else:
-            form.use_raspberry.render_kw                 = {'placeholder':get_sp_config('USE_RASPBERRY',app)}
-            form.correct_vertical_camera.render_kw       = {'placeholder':get_sp_config('CORRECT_VERTICAL_CAMERA',app)}
-            form.correct_horizontal_camera.render_kw     = {'placeholder':get_sp_config('CORRECT_HORIZONTAL_CAMERA',app)}
-            form.center_radius.render_kw                 = {'placeholder':get_sp_config('CENTER_RADIUS',app)}
-            form.show_center_circle.render_kw            = {'placeholder':get_sp_config('SHOW_CENTER_CIRCLE',app)}
-            form.enable_photo.render_kw                  = {'placeholder':get_sp_config('ENABLE_PHOTO',app)}
-            form.enable_video.render_kw                  = {'placeholder':get_sp_config('ENABLE_VIDEO',app)}
-            form.record_seconds.render_kw                = {'placeholder':get_sp_config('RECORD_SECONDS',app)}
+            form.use_raspberry.render_kw                 = {'value':get_sp_config('USE_RASPBERRY',app)}
+            form.correct_vertical_camera.render_kw       = {'value':get_sp_config('CORRECT_VERTICAL_CAMERA',app)}
+            form.correct_horizontal_camera.render_kw     = {'value':get_sp_config('CORRECT_HORIZONTAL_CAMERA',app)}
+            form.center_radius.render_kw                 = {'value':get_sp_config('CENTER_RADIUS',app)}
+            form.show_center_circle.render_kw            = {'value':get_sp_config('SHOW_CENTER_CIRCLE',app)}
+            form.enable_photo.render_kw                  = {'value':get_sp_config('ENABLE_PHOTO',app)}
+            form.enable_video.render_kw                  = {'value':get_sp_config('ENABLE_VIDEO',app)}
+            form.record_seconds.render_kw                = {'value':get_sp_config('RECORD_SECONDS',app)}
             form.threshold.render_kw                     = {'value':get_sp_config('THRESHOLD',app)}
 
-            form.resolution.render_kw                    = {'placeholder':get_sp_config('Select resolution',app)}
-            form.framerate.render_kw                     = {'placeholder':get_sp_config('FRAMERATE',app)}
-            form.sensor_mode.render_kw                   = {'placeholder':get_sp_config('SENSOR_MODE',app)}
-            form.shutter_speed.render_kw                 = {'placeholder':get_sp_config('SHUTTER_SPEED',app)}
-            form.iso.render_kw                           = {'placeholder':get_sp_config('ISO',app)}
+            form.resolution.render_kw                    = {'value':get_sp_config('RESOLUTION',app)}
+            form.framerate.render_kw                     = {'value':get_sp_config('FRAMERATE',app)}
+            form.sensor_mode.render_kw                   = {'value':get_sp_config('SENSOR_MODE',app)}
+            form.shutter_speed.render_kw                 = {'value':get_sp_config('SHUTTER_SPEED',app)}
+            form.iso.render_kw                           = {'value':get_sp_config('ISO',app)}
 
             form.use_raspberry.label                     = 'USE RASPBERRY:'
             form.correct_vertical_camera.label           = 'CORRECT VERTICAL CAMERA:'
@@ -133,6 +133,7 @@ def start_webstreaming():
     # start the flask app
     app = create_app()
     init_db(app)
+    load_db(app)
 
     t1 = threading.Thread(target=camera_loop,args=(app,))
     t1.daemon = True

@@ -50,7 +50,7 @@ def load_db(app):
     spectro_pointer_config['threshold']            = int(THRESHOLD)
     config_data.append(spectro_pointer_config['threshold'])
 
-    spectro_pointer_config['resolution']            = int(RESOLUTION)
+    spectro_pointer_config['resolution']            = str(RESOLUTION)
     config_data.append(spectro_pointer_config['resolution'])
 
     spectro_pointer_config['framerate']            = int(FRAMERATE)
@@ -80,12 +80,12 @@ def init_db(app):
     conn = connect_db()
     c = conn.cursor()
     try:
-        c.execute('''create table sp_config (id int, USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
+        c.execute('''create table sp_config (USE_RASPBERRY int, CORRECT_VERTICAL_CAMERA int,
                                              CORRECT_HORIZONTAL_CAMERA int, CENTER_RADIUS int,
                                              SHOW_CENTER_CIRCLE int, ENABLE_PHOTO int,
                                              ENABLE_VIDEO int,RECORD_SECONDS int, THRESHOLD int,
                                              RESOLUTION text, FRAMERATE int, SENSOR_MODE int,
-                                             SHUTTER_SPEED int, ISO int, PRIMARY KEY(id))''')        
+                                             SHUTTER_SPEED int, ISO int)''')        
         load_db(app)
 
     except sqlite3.OperationalError as e:
@@ -106,7 +106,7 @@ def sql_stat_build(str1,str2,cont,listM,valueSP):
         str1 += str2
     else:
         str1 += "," + str2
-    listM.append(int(valueSP))
+        listM.append(int(valueSP))
     return str1
 
 def set_sp_config(app,**spectro_pointer_config):
