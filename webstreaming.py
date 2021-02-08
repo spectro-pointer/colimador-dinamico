@@ -73,7 +73,7 @@ def create_app(configfile=None):
 
                 with lock:
                     set_sp_config(app,**spectro_pointer_config)
-                    update_params(app)
+                    update_params(app,set_camera_attr_en=True)
 
             return redirect(url_for('set_config'))
         else:
@@ -87,7 +87,7 @@ def create_app(configfile=None):
             form.record_seconds.render_kw                = {'value':get_sp_config('RECORD_SECONDS',app)}
             form.threshold.render_kw                     = {'value':get_sp_config('THRESHOLD',app)}
 
-            form.resolution.render_kw                    = {'value':get_sp_config('RESOLUTION',app)}
+            form.resolution.data                         = get_sp_config('RESOLUTION',app)
             form.framerate.render_kw                     = {'value':get_sp_config('FRAMERATE',app)}
             form.sensor_mode.render_kw                   = {'value':get_sp_config('SENSOR_MODE',app)}
             form.shutter_speed.render_kw                 = {'value':get_sp_config('SHUTTER_SPEED',app)}
@@ -134,7 +134,6 @@ def start_webstreaming():
     # start the flask app
     app = create_app()
     init_db(app)
-    load_db(app)
 
     t1 = threading.Thread(target=camera_loop,args=(app,))
     t1.daemon = True

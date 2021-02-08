@@ -13,11 +13,11 @@ class ConfigForm(FlaskForm):
     enable_video              = StringField('enable_video', validators=[Length(max=64)])
     record_seconds            = StringField('record_seconds', validators=[Length(max=64)])
     threshold                 = StringField('threshold', validators=[Length(max=64)])
-    
-    resolution                = SelectField('resolution', choices=["640x480","1280x720","1920x1080"])         
+
+    resolution                = SelectField('resolution', choices=[('192x192',"192x192"),('640x480',"640x480"),('1280x720',"1280x720"),('1920x1080',"1920x1080")])
     framerate                 = StringField('framerate', validators=[Length(max=64)])
-    sensor_mode               = StringField('sensor_mode', validators=[Length(max=64)]) 
-    shutter_speed             = StringField('shutter_speed', validators=[Length(max=64)])     
+    sensor_mode               = StringField('sensor_mode', validators=[Length(max=64)])
+    shutter_speed             = StringField('shutter_speed', validators=[Length(max=64)])
     iso                       = StringField('iso', validators=[Length(max=64)])
-    
+
     submit                    = SubmitField('Actualizar')

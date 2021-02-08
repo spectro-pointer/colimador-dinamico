@@ -25,7 +25,7 @@ SHOW_CENTER_CIRCLE = True
 THRESHOLD = 50  # modificado se ajusta desde la ventana 
 # Threshold of brightness of lights to be detected (Range 0: darkest - 255 brightest)
 
-RESOLUTION = '1280x720'
+RESOLUTION = '192x192'
 # Retrieves or sets the resolution at which image captures, video recordings, and previews will be captured.
 # The resolution can be specified as a (width, height) tuple, as a string formatted
 # 'WIDTHxHEIGHT', or as a string containing a commonly recognized display resolution name
