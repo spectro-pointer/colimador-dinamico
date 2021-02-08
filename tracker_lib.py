@@ -1,4 +1,3 @@
-
 __author__ = 'Nicolas Tomatis'
 __version__ = "Version 1.3"
 __copyright__ = "Copyright 2016, PydevAr"
@@ -142,6 +141,24 @@ def sequence_test():
     print("The sequence has concluded.")
 
 
+def camera_attr(camera=None,stream=None):
+    global RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO
+
+    if PiCamera is type(camera):
+        camera.resolution         = RESOLUTION
+        camera.framerate          = FRAMERATE
+        camera.sensor_mode        = SENSOR_MODE
+        camera.shutter_speed      = SHUTTER_SPEED
+        camera.iso                = ISO
+        # print("resolution",camera.resolution)
+        # print("framerate",camera.framerate)
+        # print("sensor_mode",camera.sensor_mode)
+        # print("shutter_speed",camera.shutter_speed)
+        # print("iso",camera.iso)
+
+        stream = PiRGBArray(camera, size=SIZE)
+        time.sleep(0.1)  # allow the camera to warmup
+
 def set_up_camera():
     """
     Initializes Raspberry Pi Camera.
@@ -151,14 +168,15 @@ def set_up_camera():
     try:
         camera = PiCamera()
 #        camera.roi (0.5,0.5,0.25,0.25)
-        camera.resolution = SIZE
         stream = PiRGBArray(camera, size=SIZE)
-        time.sleep(0.1)  # allow the camera to warmup
+        camera_attr(camera,stream)
+
+        # stream = PiRGBArray(camera, size=SIZE)
+        # time.sleep(0.1)  # allow the camera to warmup
     except:
         print("Error with Raspberry Pi Camera")
         sys.exit(0)
     return camera, stream
-
 
 def capture_frame(camera, stream):
     """
@@ -384,8 +402,8 @@ def record_action(place, frame, take_photo, take_video):
             video_writer.release()
             record_video = "off"
 
-def update_params(app):
-    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO
+def update_params(app,set_camera_attr_en=False):
+    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,camera,stream
 
     USE_RASPBERRY             = get_sp_config('USE_RASPBERRY',app)
     CORRECT_VERTICAL_CAMERA   = get_sp_config('CORRECT_VERTICAL_CAMERA',app)
@@ -396,17 +414,25 @@ def update_params(app):
     ENABLE_VIDEO              = get_sp_config('ENABLE_VIDEO',app)
     RECORD_SECONDS            = get_sp_config('RECORD_SECONDS',app)
     TH                        = get_sp_config('THRESHOLD',app)
-    RESOLUTION                = get_sp_config('RESOLUTION',app)
+
+    #---------------------------------------------------------
+    # Camera settings
     FRAMERATE                 = get_sp_config('FRAMERATE',app)
     SENSOR_MODE               = get_sp_config('SENSOR_MODE',app)
     SHUTTER_SPEED             = get_sp_config('SHUTTER_SPEED',app)
     ISO                       = get_sp_config('ISO',app)
+    RESOLUTION                = get_sp_config('RESOLUTION',app)
+    if set_camera_attr_en:
+        camera.close()
+        camera = PiCamera()
+        camera_attr(camera,stream)
 
 def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream
+    update_params(app)
     camera, stream = set_up_camera()
 
     # Global variables initialized.
@@ -415,7 +441,6 @@ def camera_loop(app):
     record_video = "off"
     while True:
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
-        #update_params(app)
 
         frame = capture_frame(camera, stream)
         if frame is None:
@@ -528,4 +553,3 @@ def fun():
 
 if __name__ == "__main__":
     fun()
-
