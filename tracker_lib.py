@@ -151,6 +151,12 @@ def camera_attr(camera=None,stream=None):
         camera.sensor_mode        = SENSOR_MODE
         camera.shutter_speed      = SHUTTER_SPEED
         camera.iso                = ISO
+        # print("resolution",camera.resolution)
+        # print("framerate",camera.framerate)
+        # print("sensor_mode",camera.sensor_mode)
+        # print("shutter_speed",camera.shutter_speed)
+        # print("iso",camera.iso)
+
         stream = PiRGBArray(camera, size=SIZE)
         time.sleep(0.1)  # allow the camera to warmup
 
@@ -165,11 +171,6 @@ def set_up_camera():
 #        camera.roi (0.5,0.5,0.25,0.25)
         stream = PiRGBArray(camera, size=SIZE)
         camera_attr(camera,stream)
-        # camera.resolution       = SIZE
-        # camera.framerate        = FRAMERATE
-        # camera.sensor_mode      = SENSOR_MODE
-        # camera.shutter_speed    = SHUTTER_SPEED
-        # camera.iso              = ISO
 
         # stream = PiRGBArray(camera, size=SIZE)
         # time.sleep(0.1)  # allow the camera to warmup
@@ -421,7 +422,7 @@ def update_params(app,set_camera_attr_en=False):
     SENSOR_MODE               = get_sp_config('SENSOR_MODE',app)
     SHUTTER_SPEED             = get_sp_config('SHUTTER_SPEED',app)
     ISO                       = get_sp_config('ISO',app)
-    RESOLUTION                = tuple([int(param) for param in get_sp_config('RESOLUTION',app).split("x")])
+    RESOLUTION                = get_sp_config('RESOLUTION',app)
     if set_camera_attr_en:
         camera.close()
         camera = PiCamera()
