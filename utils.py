@@ -101,12 +101,18 @@ def get_db():
     return db
 
 # Function for sql UPDATE statement string building
-def sql_stat_build(str1,str2,cont,listM,valueSP):
+def sql_stat_build(str1,str2,cont,listM,valueSP): 
+    # If value is resolution do not convert to int
+    if str2 == "RESOLUTION=?":
+        listM.append(valueSP)
+    else:    
+        listM.append(int(valueSP))
+
     if cont == 0:
         str1 += str2
     else:
         str1 += "," + str2
-        listM.append(int(valueSP))
+
     return str1
 
 def set_sp_config(app,**spectro_pointer_config):

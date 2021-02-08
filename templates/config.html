@@ -144,12 +144,7 @@
                     <hr noshade="noshade" />
                     <div class="form-group">
                         {{ form.resolution.label }}
-                        {{ form.resolution(size=64,class="form-control",list="datalistOptions") }}
-                        <datalist id="datalistOptions">
-                          <option value="640x480">
-                          <option value="1280x720">
-                          <option value="1920x1080">
-                        </datalist>
+                        {{ form.resolution(class="form-control",type="text",id="selResolution") }}
                         {% for error in form.resolution.errors %}
                         <span style="color: red;">{{ error }}</span>
                         {% endfor %}

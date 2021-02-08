@@ -50,6 +50,7 @@ def create_app(configfile=None):
         # return the response generated along with the specific media
         # type (mime type)
         form = ConfigForm()
+
         if request.method == 'POST':
             if form.validate_on_submit():
                 spectro_pointer_config = {}

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Email, Length
 from config import *
 
@@ -14,7 +14,7 @@ class ConfigForm(FlaskForm):
     record_seconds            = StringField('record_seconds', validators=[Length(max=64)])
     threshold                 = StringField('threshold', validators=[Length(max=64)])
     
-    resolution                = StringField('resolution', validators=[Length(max=64)])         
+    resolution                = SelectField('resolution', choices=["640x480","1280x720","1920x1080"])         
     framerate                 = StringField('framerate', validators=[Length(max=64)])
     sensor_mode               = StringField('sensor_mode', validators=[Length(max=64)]) 
     shutter_speed             = StringField('shutter_speed', validators=[Length(max=64)])     
