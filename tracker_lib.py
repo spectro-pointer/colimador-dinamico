@@ -1,4 +1,3 @@
-
 __author__ = 'Nicolas Tomatis'
 __version__ = "Version 1.3"
 __copyright__ = "Copyright 2016, PydevAr"
@@ -554,4 +553,3 @@ def fun():
 
 if __name__ == "__main__":
     fun()
-

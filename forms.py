@@ -19,5 +19,4 @@ class ConfigForm(FlaskForm):
     sensor_mode               = StringField('sensor_mode', validators=[Length(max=64)])
     shutter_speed             = StringField('shutter_speed', validators=[Length(max=64)])
     iso                       = StringField('iso', validators=[Length(max=64)])
-
     submit                    = SubmitField('Actualizar')
