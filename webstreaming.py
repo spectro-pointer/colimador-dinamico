@@ -117,6 +117,7 @@ def create_app(configfile=None):
             with lock:
                 delete_db(app)
                 load_db(app)
+                update_params(app,set_camera_attr_en=True)
             return redirect(url_for('set_config'))
         else:
             return redirect(url_for('set_config'))

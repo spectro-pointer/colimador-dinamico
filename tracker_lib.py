@@ -9,7 +9,7 @@ from utils import *
 
 # Constants to be defined.
 DEBUG = False  # Use for developers.
-SIZE = (192,192)  # Camera resolution in (x, y)
+SIZE = tuple([int(s) for s in RESOLUTION.split('x') if s.isdigit()])  # Camera resolution in (x, y)
 #CR = CENTER_RADIUS #= CR
 SHOW_IMAGE = True  # View the camera.
 
@@ -142,9 +142,8 @@ def sequence_test():
 
 
 def camera_attr(camera=None,stream=None):
-    global RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,SIZE
-
     if PiCamera is type(camera):
+        time.sleep(2)
         camera.resolution         = RESOLUTION
         camera.framerate          = FRAMERATE
         camera.sensor_mode        = SENSOR_MODE
@@ -494,7 +493,9 @@ def camera_loop(app):
 
             lst = list()
             lst.append((frame, "frame"))
+            #The lock in necessary to not generate conflicts with thread
             with lock:
+                #The left side of the tuple is the original image and the right side the processed one
                 outputFrame = tuple([frame.copy(),b_frame.copy()])
             show_images(lst, SIZE)
         # cv2.imshow("frame", frame)

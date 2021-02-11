@@ -27,9 +27,8 @@ THRESHOLD = 50  # modificado se ajusta desde la ventana
 
 RESOLUTION = '192x192'
 # Retrieves or sets the resolution at which image captures, video recordings, and previews will be captured.
-# The resolution can be specified as a (width, height) tuple, as a string formatted
-# 'WIDTHxHEIGHT', or as a string containing a commonly recognized display resolution name
-# (e.g. “VGA”, “HD”, “1080p”, etc).
+# The resolution can be specified as 'WIDTHxHEIGHT', or as a string containing a commonly recognized display resolution name
+# (e.g. “VGA”, “HD”, “1080p”, etc)
 
 FRAMERATE = 30
 # Retrieves or sets the framerate at which video-port based image captures, video recordings, and previews will run.
