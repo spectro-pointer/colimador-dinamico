@@ -142,7 +142,7 @@ def sequence_test():
 
 
 def camera_attr(camera=None,stream=None):
-    global RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO
+    global RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,SIZE
 
     if PiCamera is type(camera):
         camera.resolution         = RESOLUTION
@@ -155,9 +155,10 @@ def camera_attr(camera=None,stream=None):
         # print("sensor_mode",camera.sensor_mode)
         # print("shutter_speed",camera.shutter_speed)
         # print("iso",camera.iso)
-
         stream = PiRGBArray(camera, size=SIZE)
         time.sleep(0.1)  # allow the camera to warmup
+
+    return camera,stream
 
 def set_up_camera():
     """
@@ -169,7 +170,7 @@ def set_up_camera():
         camera = PiCamera()
 #        camera.roi (0.5,0.5,0.25,0.25)
         stream = PiRGBArray(camera, size=SIZE)
-        camera_attr(camera,stream)
+        camera,stream = camera_attr(camera,stream)
 
         # stream = PiRGBArray(camera, size=SIZE)
         # time.sleep(0.1)  # allow the camera to warmup
@@ -403,7 +404,7 @@ def record_action(place, frame, take_photo, take_video):
             record_video = "off"
 
 def update_params(app,set_camera_attr_en=False):
-    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,camera,stream
+    global SIZE, USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,camera,stream
 
     USE_RASPBERRY             = get_sp_config('USE_RASPBERRY',app)
     CORRECT_VERTICAL_CAMERA   = get_sp_config('CORRECT_VERTICAL_CAMERA',app)
@@ -422,10 +423,10 @@ def update_params(app,set_camera_attr_en=False):
     SHUTTER_SPEED             = get_sp_config('SHUTTER_SPEED',app)
     ISO                       = get_sp_config('ISO',app)
     RESOLUTION                = get_sp_config('RESOLUTION',app)
+    SIZE = tuple([int(s) for s in RESOLUTION.split('x') if s.isdigit()])
+
     if set_camera_attr_en:
-        camera.close()
-        camera = PiCamera()
-        camera_attr(camera,stream)
+        camera,stream = camera_attr(camera,stream)
 
 def camera_loop(app):
     """
@@ -439,9 +440,9 @@ def camera_loop(app):
     contour_appeared = False
     contour_centered = False
     record_video = "off"
+
     while True:
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
-
         frame = capture_frame(camera, stream)
         if frame is None:
             cv2.destroyAllWindows()
