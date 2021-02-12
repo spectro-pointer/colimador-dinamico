@@ -30,8 +30,12 @@ def create_app(configfile=None):
 
     @app.route("/")
     def index():
-        # return the rendered template
+        # redirects to config page
         return redirect(url_for('set_config'))
+
+    @app.route("/stream_video")
+    def set_video():
+        return render_template('video.html')
 
     @app.route("/video_feed")
     def video_feed():
@@ -122,7 +126,6 @@ def create_app(configfile=None):
         else:
             return redirect(url_for('set_config'))
     return app
-
 
 def start_webstreaming():
     ap = argparse.ArgumentParser()
