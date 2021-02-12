@@ -11,19 +11,6 @@ from config import *
 from forms import ConfigForm
 from time import sleep
 
-# initialize the output frame and a lock used to ensure thread-safe
-# exchanges of the output frames (useful when multiple browsers/tabs
-# are viewing the stream)
-outputFrame = None
-update_parameters_en = False
-# lock = threading.Lock()
-# initialize a flask object
-#app = Flask(__name__, template_folder="./")
-# initialize the video stream and allow the camera sensor to
-# warmup
-#vs = VideoStream(usePiCamera=1).start()
-
-
 def create_app(configfile=None):
 
     app = Flask(
@@ -50,13 +37,20 @@ def create_app(configfile=None):
     def video_feed():
         # return the response generated along with the specific media
         # type (mime type)
-        return Response(generate(),mimetype = "multipart/x-mixed-replace; boundary=frame")
+        return Response(generate('VIDEO'),mimetype = "multipart/x-mixed-replace; boundary=frame")
+
+    @app.route("/thr_feed")
+    def thr_feed():
+        # return the response generated along with the specific media
+        # type (mime type)
+        return Response(generate('THR'),mimetype = "multipart/x-mixed-replace; boundary=frame")
 
     @app.route("/config", methods=["GET","POST"])
     def set_config():
         # return the response generated along with the specific media
         # type (mime type)
         form = ConfigForm()
+
         if request.method == 'POST':
             if form.validate_on_submit():
                 spectro_pointer_config = {}
@@ -68,18 +62,37 @@ def create_app(configfile=None):
                 spectro_pointer_config['enable_photo']              = form.enable_photo.data
                 spectro_pointer_config['enable_video']              = form.enable_video.data
                 spectro_pointer_config['record_seconds']            = form.record_seconds.data
+                spectro_pointer_config['threshold']                 = form.threshold.data
+
+                spectro_pointer_config['resolution']                = form.resolution.data
+                spectro_pointer_config['framerate']                 = form.framerate.data
+                spectro_pointer_config['sensor_mode']               = form.sensor_mode.data
+                spectro_pointer_config['shutter_speed']             = form.shutter_speed.data
+                spectro_pointer_config['iso']                       = form.iso.data
+                
+
                 with lock:
                     set_sp_config(app,**spectro_pointer_config)
+                    update_params(app,set_camera_attr_en=True)
+
             return redirect(url_for('set_config'))
         else:
-            form.use_raspberry.render_kw                 = {'placeholder':get_sp_config('USE_RASPBERRY',app)}
-            form.correct_vertical_camera.render_kw       = {'placeholder':get_sp_config('CORRECT_VERTICAL_CAMERA',app)}
-            form.correct_horizontal_camera.render_kw     = {'placeholder':get_sp_config('CORRECT_HORIZONTAL_CAMERA',app)}
-            form.center_radius.render_kw                 = {'placeholder':get_sp_config('CENTER_RADIUS',app)}
-            form.show_center_circle.render_kw            = {'placeholder':get_sp_config('SHOW_CENTER_CIRCLE',app)}
-            form.enable_photo.render_kw                  = {'placeholder':get_sp_config('ENABLE_PHOTO',app)}
-            form.enable_video.render_kw                  = {'placeholder':get_sp_config('ENABLE_VIDEO',app)}
-            form.record_seconds.render_kw                = {'placeholder':get_sp_config('RECORD_SECONDS',app)}
+            form.use_raspberry.render_kw                 = {'value':get_sp_config('USE_RASPBERRY',app)}
+            form.correct_vertical_camera.render_kw       = {'value':get_sp_config('CORRECT_VERTICAL_CAMERA',app)}
+            form.correct_horizontal_camera.render_kw     = {'value':get_sp_config('CORRECT_HORIZONTAL_CAMERA',app)}
+            form.center_radius.render_kw                 = {'value':get_sp_config('CENTER_RADIUS',app)}
+            form.show_center_circle.render_kw            = {'value':get_sp_config('SHOW_CENTER_CIRCLE',app)}
+            form.enable_photo.render_kw                  = {'value':get_sp_config('ENABLE_PHOTO',app)}
+            form.enable_video.render_kw                  = {'value':get_sp_config('ENABLE_VIDEO',app)}
+            form.record_seconds.render_kw                = {'value':get_sp_config('RECORD_SECONDS',app)}
+            form.threshold.render_kw                     = {'value':get_sp_config('THRESHOLD',app)}
+
+            form.resolution.data                         = get_sp_config('RESOLUTION',app)
+            form.framerate.render_kw                     = {'value':get_sp_config('FRAMERATE',app)}
+            form.sensor_mode.render_kw                   = {'value':get_sp_config('SENSOR_MODE',app)}
+            form.shutter_speed.render_kw                 = {'value':get_sp_config('SHUTTER_SPEED',app)}
+            form.iso.render_kw                           = {'value':get_sp_config('ISO',app)}
+
             form.use_raspberry.label                     = 'USE RASPBERRY:'
             form.correct_vertical_camera.label           = 'CORRECT VERTICAL CAMERA:'
             form.correct_horizontal_camera.label         = 'CORRECT HORIZONTAL CAMERA:'
@@ -88,6 +101,14 @@ def create_app(configfile=None):
             form.enable_photo.label                      = 'ENABLE PHOTO:'
             form.enable_video.label                      = 'ENABLE VIDEO:'
             form.record_seconds.label                    = 'RECORD SECONDS:'
+            form.threshold.label                         = 'THRESHOLD:'
+
+            form.resolution.label                        = 'RESOLUTION:'
+            form.framerate.label                         = 'FRAMERATE:'
+            form.sensor_mode.label                       = 'SENSOR_MODE:'
+            form.shutter_speed.label                     = 'SHUTTER_SPEED:'
+            form.iso.label                               = 'ISO:'
+
         return render_template("config.html",form=form)
 
     @app.route("/default",methods=['GET','POST'])
@@ -96,6 +117,7 @@ def create_app(configfile=None):
             with lock:
                 delete_db(app)
                 load_db(app)
+                update_params(app,set_camera_attr_en=True)
             return redirect(url_for('set_config'))
         else:
             return redirect(url_for('set_config'))

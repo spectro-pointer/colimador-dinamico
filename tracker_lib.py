@@ -1,4 +1,3 @@
-
 __author__ = 'Nicolas Tomatis'
 __version__ = "Version 1.3"
 __copyright__ = "Copyright 2016, PydevAr"
@@ -10,7 +9,7 @@ from utils import *
 
 # Constants to be defined.
 DEBUG = False  # Use for developers.
-SIZE = (192,192)  # Camera resolution in (x, y)
+SIZE = tuple([int(s) for s in RESOLUTION.split('x') if s.isdigit()])  # Camera resolution in (x, y)
 #CR = CENTER_RADIUS #= CR
 SHOW_IMAGE = True  # View the camera.
 
@@ -142,6 +141,24 @@ def sequence_test():
     print("The sequence has concluded.")
 
 
+def camera_attr(camera=None,stream=None):
+    if PiCamera is type(camera):
+        time.sleep(2)
+        camera.resolution         = RESOLUTION
+        camera.framerate          = FRAMERATE
+        camera.sensor_mode        = SENSOR_MODE
+        camera.shutter_speed      = SHUTTER_SPEED
+        camera.iso                = ISO
+        # print("resolution",camera.resolution)
+        # print("framerate",camera.framerate)
+        # print("sensor_mode",camera.sensor_mode)
+        # print("shutter_speed",camera.shutter_speed)
+        # print("iso",camera.iso)
+        stream = PiRGBArray(camera, size=SIZE)
+        time.sleep(0.1)  # allow the camera to warmup
+
+    return camera,stream
+
 def set_up_camera():
     """
     Initializes Raspberry Pi Camera.
@@ -151,14 +168,15 @@ def set_up_camera():
     try:
         camera = PiCamera()
 #        camera.roi (0.5,0.5,0.25,0.25)
-        camera.resolution = SIZE
         stream = PiRGBArray(camera, size=SIZE)
-        time.sleep(0.1)  # allow the camera to warmup
+        camera,stream = camera_attr(camera,stream)
+
+        # stream = PiRGBArray(camera, size=SIZE)
+        # time.sleep(0.1)  # allow the camera to warmup
     except:
         print("Error with Raspberry Pi Camera")
         sys.exit(0)
     return camera, stream
-
 
 def capture_frame(camera, stream):
     """
@@ -384,8 +402,8 @@ def record_action(place, frame, take_photo, take_video):
             video_writer.release()
             record_video = "off"
 
-def update_params(app):
-    global USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS
+def update_params(app,set_camera_attr_en=False):
+    global SIZE, USE_RASPBERRY,CORRECT_VERTICAL_CAMERA,CORRECT_HORIZONTAL_CAMERA,CENTER_RADIUS,SHOW_CENTER_CIRCLE,ENABLE_PHOTO,ENABLE_VIDEO,RECORD_SECONDS,TH,RESOLUTION,FRAMERATE,SENSOR_MODE,SHUTTER_SPEED,ISO,camera,stream
 
     USE_RASPBERRY             = get_sp_config('USE_RASPBERRY',app)
     CORRECT_VERTICAL_CAMERA   = get_sp_config('CORRECT_VERTICAL_CAMERA',app)
@@ -395,22 +413,35 @@ def update_params(app):
     ENABLE_PHOTO              = get_sp_config('ENABLE_PHOTO',app)
     ENABLE_VIDEO              = get_sp_config('ENABLE_VIDEO',app)
     RECORD_SECONDS            = get_sp_config('RECORD_SECONDS',app)
+    TH                        = get_sp_config('THRESHOLD',app)
+
+    #---------------------------------------------------------
+    # Camera settings
+    FRAMERATE                 = get_sp_config('FRAMERATE',app)
+    SENSOR_MODE               = get_sp_config('SENSOR_MODE',app)
+    SHUTTER_SPEED             = get_sp_config('SHUTTER_SPEED',app)
+    ISO                       = get_sp_config('ISO',app)
+    RESOLUTION                = get_sp_config('RESOLUTION',app)
+    SIZE = tuple([int(s) for s in RESOLUTION.split('x') if s.isdigit()])
+
+    if set_camera_attr_en:
+        camera,stream = camera_attr(camera,stream)
 
 def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream
+    update_params(app)
     camera, stream = set_up_camera()
 
     # Global variables initialized.
     contour_appeared = False
     contour_centered = False
     record_video = "off"
-    while True:
-        update_params(app)
-        TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
 
+    while True:
+        # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
         frame = capture_frame(camera, stream)
         if frame is None:
             cv2.destroyAllWindows()
@@ -432,7 +463,7 @@ def camera_loop(app):
 
         # Change frame to grey color.
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	
+
         # Apply Threshold.
         _dummy, b_frame = cv2.threshold(gray_frame,TH, 255, cv2.THRESH_BINARY) ### gustavo
         cv2.imshow("threshold", b_frame)  ### gustavo
@@ -462,8 +493,10 @@ def camera_loop(app):
 
             lst = list()
             lst.append((frame, "frame"))
+            #The lock in necessary to not generate conflicts with thread
             with lock:
-                outputFrame = frame.copy()
+                #The left side of the tuple is the original image and the right side the processed one
+                outputFrame = tuple([frame.copy(),b_frame.copy()])
             show_images(lst, SIZE)
         # cv2.imshow("frame", frame)
 
@@ -474,7 +507,7 @@ def camera_loop(app):
         stream.truncate()
     cv2.destroyAllWindows()
 
-def generate():
+def generate(select_source):
     # grab global references to the output frame and lock variables
     global outputFrame, lock
     # loop over frames from the output stream
@@ -486,7 +519,10 @@ def generate():
             if outputFrame is None:
                 continue
             # encode the frame in JPEG format
-            flag, encodedImage = cv2.imencode(".jpg", outputFrame)
+            if select_source == 'VIDEO':
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[0])
+            if select_source == 'THR':
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
 
         # yield the output frame in the byte format
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + encodedImage.tostring() + b'\r\n')
@@ -519,4 +555,3 @@ def fun():
 
 if __name__ == "__main__":
     fun()
-
