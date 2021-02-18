@@ -38,7 +38,7 @@ cv2.createTrackbar('TH','threshold',50,255,nothing)  ### gustavo
 #while not key == ord('q'):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
-# arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
+arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
 FOURCC = cv2.VideoWriter_fourcc(*'XVID')
@@ -165,9 +165,6 @@ def set_up_camera():
 #        camera.roi (0.5,0.5,0.25,0.25)
         stream = PiRGBArray(camera, size=SIZE)
         camera,stream = camera_attr(camera,stream)
-
-        # stream = PiRGBArray(camera, size=SIZE)
-        # time.sleep(0.1)  # allow the camera to warmup
     except:
         print("Error with Raspberry Pi Camera")
         sys.exit(0)
@@ -213,10 +210,6 @@ def create_coordinates(image):
 
     cv2.line(image, (0, int(SIZE[1]/2)), (int(SIZE[0]), int(SIZE[1]/2)), (255, 0, 0), 1)
     cv2.line(image, (int(SIZE[0]/2), 0), (int(SIZE[0]/2), int(SIZE[1])), (255, 0, 0), 1)
-    # cv2.putText(image, "A+", (int(SIZE[0]/4), int(SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-    # cv2.putText(image, "B+", (int(3 * SIZE[0]/4), int(SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-    # cv2.putText(image, "A-", (int(SIZE[0]/4), int(3 * SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
-    # cv2.putText(image, "B-", (int(3 * SIZE[0]/4), int(3 * SIZE[1]/4)), cv2.FONT_HERSHEY_SIMPLEX, 1, (80, 80, 200))
     cv2.circle(image, (int(SIZE[0]/2), int(SIZE[1]/2)), CENTER_RADIUS, (80, 80, 200), 1)
     return image
 
@@ -255,14 +248,11 @@ def check_quadrant(cx, cy):
     Red shows that the camera is centered.
     """
     global available_leds
-    # returnString ="{} , {}".format(cx,cy)  ### gustavo
-#    returnString1 ="cy{}".format(cy)
-#    print cx,cy
+    returnString ="{} , {}".format(cx,cy)  ### gustavo
     result = ""
-#    print(returString1)
-    # print(returnString)                    ### gustavo
+    print(returnString)                    ### gustavo
 
-    # arduino.write(returnString + '\n')    ### gustavo
+    arduino.write(returnString + '\n')    ### gustavo
     # When no contour has been detected:
     # It turns on LED_YELLOW and returns ""
     if cx < 0 or cy < 0:
@@ -324,7 +314,6 @@ def obtain_single_contour(b_frame):
         contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     except ValueError:
         _, contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    # cx, cy = (90, 90)  # NOTE: This was replaced with negative coordinates
     cx, cy = (-1, -1)  # When none is found, a negative coordinates are returned.
     for blob in contours:
         M = cv2.moments(blob)
