@@ -4,11 +4,15 @@ __copyright__ = "Copyright 2016, PydevAr"
 __email__ = "pydev.ar@gmail.com"
 
 from tracker_lib import *
+from webstreaming import *
+from config import *
+from utils import *
 
 
 def main():
     set_up_leds()
-    camera_loop()
+    start_webstreaming()
+    # camera_loop()
 
     # when code ends, the GPIO is freed...
     GPIO.cleanup()

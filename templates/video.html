@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block extra_style %}
+<style>
+    .slidecontainer {
+      width: 100%; /* Width of the outside container */
+    }
+
+    /* The slider itself */
+    .slider {
+      -webkit-appearance: none;  /* Override default CSS styles */
+      appearance: none;
+      width: 100%; /* Full-width */
+      height: 25px; /* Specified height */
+      background: #d3d3d3; /* Grey background */
+      outline: none; /* Remove outline */
+      opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+    }
+
+    /* Mouse-over effects */
+    .slider:hover {
+      opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px; /* Slider handle height */
+      background: #4CAF50; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px; /* Slider handle height */
+      background: #4CAF50; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+    /*body { background: #000000 !important; }*/
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    var slider = document.getElementById("thresholdRange");
+    var output = document.getElementById("sel_threshold");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+      output.innerHTML = this.value;
+    }
+</script>
+{% endblock %}
+
+
+{% block main_content %}
+<div class="container-fluid">
+    <div class="row bg-sp text-white shadow py-2 d-flex mb-2">
+        <div class="col-6 mt-0 pt-0 mb-0 pb-0">
+            <h4 class='pl-3'>Spectro-Pointer Video Streaming</h4>
+        </div>
+        <div class="col-6 mt-0 pt-0 mb-0 pb-0 d-flex flex-row-reverse">
+            <a href="/config" class="btn btn-primary bg-sp border-white" role="button" aria-pressed="true">Config</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 order-sm-1">
+                <div class="row mb-5">
+                    <img class='img-responsive rounded mx-auto d-block' src="{{ url_for('video_feed') }}" width = '70%' ><!--  style="width: 400px; height: 400px;"> -->
+                </div>
+                <hr noshade="noshade" />
+                <div class="row my-5">
+                    <img class='img-responsive rounded mx-auto d-block' src="{{ url_for('thr_feed') }}" width = '70%' ><!--  style="width: 400px; height: 400px;"> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
