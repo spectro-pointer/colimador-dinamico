@@ -211,6 +211,9 @@ def create_coordinates(image):
     cv2.line(image, (0, int(SIZE[1]/2)), (int(SIZE[0]), int(SIZE[1]/2)), (255, 0, 0), 1)
     cv2.line(image, (int(SIZE[0]/2), 0), (int(SIZE[0]/2), int(SIZE[1])), (255, 0, 0), 1)
     cv2.circle(image, (int(SIZE[0]/2), int(SIZE[1]/2)), CENTER_RADIUS, (80, 80, 200), 1)
+    timestamp = datetime.datetime.now()
+    cv2.putText(image, timestamp.strftime( "%I:%M:%S%p"), (10, image.shape[0] - 10),
+    cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
     return image
 
 
