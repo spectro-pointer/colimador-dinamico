@@ -252,7 +252,7 @@ def check_quadrant(cx, cy):
     result = ""
     print(returnString)                    ### gustavo
 
-    arduino.write(returnString + '\n')    ### gustavo
+    arduino.write(returnString.encode() + '\n'.encode())    ### gustavo
     # When no contour has been detected:
     # It turns on LED_YELLOW and returns ""
     if cx < 0 or cy < 0:
