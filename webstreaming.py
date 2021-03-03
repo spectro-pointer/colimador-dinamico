@@ -128,12 +128,12 @@ def create_app(configfile=None):
     return app
 
 def start_webstreaming():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--ip", type=str, required=True,
-        help="ip address of the device")
-    ap.add_argument("-o", "--port", type=int, required=True,
-        help="ephemeral port number of the server (1024 to 65535)")
-    args = vars(ap.parse_args())
+#    ap = argparse.ArgumentParser()
+#    ap.add_argument("-i", "--ip", type=str, required=True,
+#        help="ip address of the device")
+#    ap.add_argument("-o", "--port", type=int, required=True,
+#        help="ephemeral port number of the server (1024 to 65535)")
+#    args = vars(ap.parse_args())
 
     # start the flask app
     app = create_app()
@@ -143,5 +143,6 @@ def start_webstreaming():
     t1.daemon = True
     t1.start()
 
-    app.run(host=args["ip"], port=args["port"], debug=True,
+   app.run(host='0.0.0.0', port='8086', debug=True,
         threaded=True, use_reloader=False)
+
