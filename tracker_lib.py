@@ -32,8 +32,8 @@ def nothing(a):
     pass
 
 #cv2.imshow("b_clone", b_frame)
-cv2.namedWindow('threshold')                          ### gustavo
-cv2.createTrackbar('TH','threshold',50,255,nothing)  ### gustavo
+#cv2.namedWindow('threshold')                          ### gustavo
+#cv2.createTrackbar('TH','threshold',50,255,nothing)  ### gustavo
  
 #while not key == ord('q'):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
@@ -233,7 +233,7 @@ def camera_test():
             cv2.destroyAllWindows()
             break
 
-        cv2.imshow("image", frame)
+ #       cv2.imshow("image", frame)
 
         if wait_key() == "break":
             break
@@ -451,7 +451,7 @@ def camera_loop(app):
 	
         # Apply Threshold.
         _dummy, b_frame = cv2.threshold(gray_frame,TH, 255, cv2.THRESH_BINARY) ### gustavo
-        cv2.imshow("threshold", b_frame)  ### gustavo
+  #      cv2.imshow("threshold", b_frame)  ### gustavo
 
 
 
@@ -521,7 +521,7 @@ def show_images(lst, size):
     counter = 0
     for frame, name in lst:
         resized_frame = cv2.resize(frame, size)
-        cv2.imshow(name, resized_frame)
+   #     cv2.imshow(name, resized_frame)
         cv2.moveWindow(name, int(size[0]*(counter % 4)), int((size[1]+35)*((counter / 4) % 3)))
         counter += 1
 
