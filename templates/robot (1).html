@@ -1,0 +1,271 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+</head>
+<body>
+    
+	<table>
+		<tr>
+			<th>
+				<div>
+					<img id="video_stream"src="http://185.25.194.10:8084/video_feed">
+					<!--	<img src="http://192.168.8.125:8084/video_feed">  -->
+				</div>
+				<div>
+					<img id="target_image" src="Target.png"  style="position: absolute; top: 0px; left: 0px; z-index: 99;">
+				</div>
+			</th>
+			<th style="text-align:center">
+				<div>
+					<h1><span style="color:#5C5C5C;">Circuit</span><span style="color:#139442"> TEST</span></h1>
+					<h4>Spectro-pointer-control</h2>
+					<h4>The date and time on the server is: {{ time }}</h2>
+					<p> estado salida:{{ m18 }}</p>
+					<br>
+				</div>
+				<div>
+					<table>
+					<tr>
+						<th>
+						</th>
+						<th>
+							<button id="up">UP</button>
+						</th>
+						<th>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<button id="left">LEFT</button>
+						</th>
+						<th>
+							<button id="stop">STOP</button>
+						</th>
+						<th>
+							<button id="right">RIGHT</button>
+						</th>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<th>
+							<button id="down">DOWN</button>
+						</th>
+						<td>
+						</td>
+					</tr>
+					</table>
+				</div>
+				<div>
+					<table>
+					<tr>
+						<th>
+							ZOOM
+						</th>
+						<th>
+							<button id="zo">-</button>
+						</th>
+						<th>
+							<button id="ZO">+</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Motor
+						</th>
+						<th>
+							<button id="enableOFF" >OFF</button> 
+						</th>
+						<th>
+							<button id="enableON"> ON</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Speed
+						</th>
+						<th>
+							<button id="SPEEDON">-</button>
+						</th>
+						<th>
+							<button id="SpeedOFF">+</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							LED 
+						</th>
+						<th>
+							<button id="LEDoff">off</button>
+						</th>
+						<th>
+							<button id="LEDon">on</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							SERVO 
+						</th>
+						<th>
+							<button id="SERVOoff">OFF</button>
+						</th>
+						<th>
+							<button id="SERVOon">ON</button>
+						</th>
+					</tr>
+					</table>
+				</div>
+				<div>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<h5> valor maxino Azimut 19200 . Elavacion 7000 </h5>
+						<p>
+							 AZ,EL <input type="number" value="{{AZ}}" name="AZ" min="1" max="19200" step="0.0001"/>
+						</p>
+						<input type="submit" value="submit"/>
+					</form>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<table>
+						<td>
+							<p>
+								 A45 E 0 <input "submit" value="2400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A90 E 0 <input "submit" value="4800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A1355 E 0 <input "submit" value="7200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A180 E 0 <input "submit" value=" 9260.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A225 E 0 <input "submit" value="12000.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A270 E 0 <input "submit" value="14400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A315 E 0 <input "submit" value="16800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A360 E 0 <input "submit" value="19200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						</table>
+					</form>
+				</div>
+			</th>
+		</tr>
+	</table>
+
+	
+	<script>
+		function getVideoPos(ev) {
+				var position = $("#video_stream").offset();
+				var d = document.getElementById('target_image');
+				d.style.display = "block"
+				d.style.position = "absolute";
+				d.style.left = position.left + 'px';
+				d.style.top = position.top + 'px';
+				var elem = document.querySelector('#video_stream');
+				var size = elem.getBoundingClientRect();
+				d.style.width = size.width + 'px';
+			}
+		window.onload = getVideoPos;
+			
+	 $( document ).ready(function(){
+		$("#down").on("mousedown", function() {
+		  $.get('/down_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#up").on("mousedown", function() {
+		  $.get('/up_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#left").on("mousedown", function() {
+		  $.get('/left_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#right").on("mousedown", function() {
+		  $.get('/right_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#ZO").on("mousedown", function() {
+		  $.get('/ZO_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#zo").on("mousedown", function() {
+		  $.get('/zo_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#enableON").on("mousedown", function() {
+		  $.get('/enableON_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableON_side');
+		});
+		$("#enableOFF").on("mousedown", function() {
+		  $.get('/enableOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableOFF_side');
+		});
+		$("#SPEEDON").on("mousedown", function() {
+		  $.get('/SPEEDON_side');
+		  }).on('mouseup', function() {
+		  $.get('/SPEEDON_side');
+		});
+		$("#SpeedOFF").on("mousedown", function() {
+		  $.get('/SpeedOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/SpeedOFF_side');
+		});
+		$("#LEDon").on("mousedown", function() {
+		  $.get('/LEDon_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDon_side');
+		});
+		$("#LEDoff").on("mousedown", function() {
+		  $.get('/LEDoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDoff_side');
+		});  
+		$("#SERVOon").on("mousedown", function() {
+		  $.get('/SERVOon_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOon_side');
+		});
+		$("#SERVOoff").on("mousedown", function() {
+		  $.get('/SERVOoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOoff_side');
+		});  
+		$("#stop").on("mousedown", function() {
+		  $.get('/stop');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		}); 
+	 }); 
+	</script>
+</body>
+</html>

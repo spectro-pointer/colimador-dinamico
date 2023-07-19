@@ -1,0 +1,309 @@
+<html>
+<head>
+
+    <title>Interfase Control </title>
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	
+</head>
+<body>
+    
+	
+
+	<table>
+		<tr>
+			<th>
+				<!--	<img src="http://185.25.194.10:8084/video_feed">  -->
+				<img id="video_stream" src="http://185.25.194.10:8084/video_feed" onclick="myClickFct()">  
+			
+			</th>
+			<th style="text-align:center">
+				<div>
+					<h1><span style="color:#5C5C5C;">Circuit</span><span style="color:#139442"> TEST</span></h1>
+					<h4>Spectro-pointer-control</h4>
+					<h4>The date and time on the server is: {{ time }}</h4>
+					
+                </div>
+				<div>
+					<table>
+					<tr>
+					    <th>
+							Capture Spectro
+						</th>
+						<th>
+						<button id="captureOFF">OFF</button>
+						
+						</th>
+						<th> 
+						<button id="captureON">ON </button>{{state_capture}}
+						</th>
+						<th>
+						</th>
+					</tr>
+					<tr>
+						<th>
+						</th>
+						<th>
+							<button id="up">UP</button>
+						</th>
+						<th>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<button id="left">LEFT</button>
+						</th>
+						<th>
+							<button id="stop">STOP</button>
+						</th>
+						<th>
+							<button id="right">RIGHT</button>
+						</th>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<th>
+							<button id="down">DOWN</button>
+						</th>
+						<td>
+						</td>
+					</tr>
+					</table>
+				</div>
+				<div>
+					<table>
+					<tr>
+						<th>
+							ZOOM
+						</th>
+						<th>
+							<button id="zo">-</button>
+						</th>
+						<th>
+							<button id="ZO">+</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Motor
+						</th>
+						<th>
+							<button id="enableOFF" >OFF</button> 
+						</th>
+						<th>
+							<button id="enableON"> ON</button>{{state_html}}
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Speed
+						</th>
+						<th>
+							<button id="SPEEDON">-</button>
+						</th>
+						<th>
+							<button id="SpeedOFF">+</button> {{state_Speed}} 
+						</th>
+					</tr>
+					<tr>
+						<th>
+							LED 
+						</th>
+						<th>
+							<button id="LEDoff">OFF</button>
+						</th>
+						<th>
+							<button id="LEDon">ON</button> led {{state_led}}
+						</th>
+					</tr>
+					
+					 <tr>
+						<th>
+							SERVO 
+						</th>
+						<th>
+							<button id="SERVOoff">OFF</button>
+						</th>
+						<th>
+							<button id="SERVOon">ON</button> ser {{servo1}}
+						</th>
+					</tr>
+					</table>
+					
+				</div>
+				<div>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<h5> valor maxino Azimut 19200 . Elavacion 7000 </h5>
+						<p>
+							 AZ,EL <input id="AZELfield"  type="text" value="{{AZ}}" name="AZ" />
+						</p>
+						<input type="submit" value="submit"/>
+					</form>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<table>
+						<td>
+							<p>
+								 A45 E 0 <input "submit" value="1.2400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A90 E 0 <input "submit" value="1.4800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A1355 E 0 <input "submit" value="1.7200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A180 E 0 <input "submit" value=" 1.9260.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A225 E 0 <input "submit" value="1.12000.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A270 E 0 <input "submit" value="1.14400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A315 E 0 <input "submit" value="1.16800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A360 E 0 <input "submit" value="1.19200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						</table>
+					</form>
+				</div>
+			</th>
+		</tr>
+	</table>
+
+	
+	<script>
+	 var divPos = {left:4,top:5};
+	 function myClickFct() 
+	 {
+		var offset = $("#video_stream").offset();
+		$(document).mousemove(function(e){
+			divPos = {
+				left: e.pageX - offset.left,
+				top: e.pageY - offset.top
+			};
+			//console.log(e.pageX, offset.left, e.pageY, offset.top);
+			//console.log(divPos.left , divPos.top);
+		});
+		var coordField = document.getElementById('AZELfield');
+		coordField.value = "0." +  Math.floor(divPos.left) + "." + Math.floor(divPos.top);
+	 }
+	 $( document ).ready(function(){
+		$("#down").on("mousedown", function() {
+		  $.get('/down_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#up").on("mousedown", function() {
+		  $.get('/up_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#left").on("mousedown", function() {
+		  $.get('/left_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#right").on("mousedown", function() {
+		  $.get('/right_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#ZO").on("mousedown", function() {
+		  $.get('/ZO_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#zo").on("mousedown", function() {
+		  $.get('/zo_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#enableON").on("mousedown", function() {
+		  $.get('/enableON_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableON_side');
+		});
+		$("#enableOFF").on("mousedown", function() {
+		  $.get('/enableOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableOFF_side');
+		});
+		$("#SPEEDON").on("mousedown", function() {
+		  $.get('/SPEEDON_side');
+		  }).on('mouseup', function() {
+		  $.get('/SPEEDON_side');
+		});
+		$("#SpeedOFF").on("mousedown", function() {
+		  $.get('/SpeedOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/SpeedOFF_side');
+		});
+		$("#LEDon").on("mousedown", function() {
+		  $.get('/LEDon_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDon_side');
+		});
+		$("#LEDoff").on("mousedown", function() {
+		  $.get('/LEDoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDoff_side');
+		});  
+		$("#SERVOon").on("mousedown", function() {
+		  $.get('/SERVOon_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOon_side');
+		});
+		$("#SERVOoff").on("mousedown", function() {
+		  $.get('/SERVOoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOoff_side');
+		});  
+		$("#stop").on("mousedown", function() {
+		  $.get('/stop');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		}); 
+		$("#captureON").on("mousedown", function() {
+		  $.get('/captureON_side');
+		  }).on('mouseup', function() {
+		  $.get('/captureON_side');
+		});
+		$("#captureOFF").on("mousedown", function() {
+		  $.get('/captureOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/captureOFF_side');
+		});
+	 }); 
+	</script>
+</body>
+</html>

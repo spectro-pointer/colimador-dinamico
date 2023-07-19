@@ -13,7 +13,7 @@ DEBUG = False  # Use for developers.
 SIZE = tuple([int(s) for s in RESOLUTION.split('x') if s.isdigit()])  # Camera resolution in (x, y)
 #CR = CENTER_RADIUS #= CR
 SHOW_IMAGE = True  # View the camera.
-
+entrada = 40 
 # Python libraries
 import time
 import cv2
@@ -38,7 +38,7 @@ def nothing(a):
 #while not key == ord('q'):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
-arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
+#arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
 FOURCC = cv2.VideoWriter_fourcc(*'XVID')
@@ -68,26 +68,28 @@ def set_up_leds():
 
     if USE_RASPBERRY:
         # BCM convention is to be used.
-        GPIO.setmode(GPIO.BCM)
+        GPIO.setmode(GPIO.BOARD)
 
         # This tells Python not to print GPIO warning messages to the screen.
         GPIO.setwarnings(False)
 
     # Pins sorted with NAMES.
     available_leds = {
-        "LED_YELLOW": 18,
-        "LED_RED": 24,
-        "LED_G_RIGHT": 23,
-        "LED_G_LEFT": 27,
-        "LED_G_UP": 22,
-        "LED_G_DOWN": 17
+        "LED_YELLOW": 12,
+        "LED_RED": 16,
+        "LED_G_RIGHT": 18,
+        "LED_G_LEFT": 11,
+        "LED_G_UP": 13,
+        "LED_G_DOWN": 15,
+ 	"LED_STOP":36  # gustavo
     }
     if USE_RASPBERRY:
         for led in available_leds.values():
             if DEBUG:
                 print("led %i is configured as output" % led)
             GPIO.setup(led, GPIO.OUT)
-
+            GPIO.setup(entrada,GPIO.IN) #gustavo
+            
 
 def led_action(led, status):
     """
@@ -132,7 +134,7 @@ def sequence_test():
 
     print("now red led will blink...")
     blink(available_leds["LED_RED"])
-
+    blink(available_leds["LED_STOP"]) # gustavo
     print("now the green led will blink in clockwise...")
     blink(available_leds["LED_G_UP"])
     blink(available_leds["LED_G_RIGHT"])
@@ -214,6 +216,12 @@ def create_coordinates(image):
     timestamp = datetime.datetime.now()
     cv2.putText(image, timestamp.strftime( "%I:%M:%S%p"), (10, image.shape[0] - 10),
     cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+    if  GPIO.input(entrada) == GPIO.HIGH:
+        cv2.putText(image, ( "AUTOMATICO"), (10, image.shape[0] - 20),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 255, 0), 1)
+    else:
+        cv2.putText(image, ( "Track Manual"), (10, image.shape[0] - 20),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
     return image
 
 
@@ -251,11 +259,17 @@ def check_quadrant(cx, cy):
     Red shows that the camera is centered.
     """
     global available_leds
-    returnString ="{} , {}".format(cx,cy)  ### gustavo
+    if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
+        led_action(available_leds["LED_G_LEFT"], "off")
+        led_action(available_leds["LED_G_RIGHT"], "off")
+        led_action(available_leds["LED_G_UP"], "off")
+        led_action(available_leds["LED_G_DOWN"], "off")
+        return
+#    returnString ="{} , {}".format(cx,cy)  ### gustavo
     result = ""
-    print(returnString)                    ### gustavo
+#    print(returnString)                    ### gustavo
 
-    arduino.write(returnString.encode() + '\n'.encode())    ### gustavo
+#    arduino.write(returnString.encode() + '\n'.encode())    ### gustavo
     # When no contour has been detected:
     # It turns on LED_YELLOW and returns ""
     if cx < 0 or cy < 0:
@@ -273,8 +287,10 @@ def check_quadrant(cx, cy):
     # It turns on LED_RED
     if abs(cx - SIZE[0]/2) < CENTER_RADIUS and abs(cy - SIZE[1]/2) < CENTER_RADIUS:
         led_action(available_leds["LED_RED"], "on")
+        led_action(available_leds["LED_STOP"],"off")  # gustavo
     else:
         led_action(available_leds["LED_RED"], "off")
+        led_action(available_leds["LED_STOP"],"on")   # gustavo
 
     # Turns on green leds, when the contour is at the left / right
     if abs(cx - SIZE[0]/2) < CENTER_RADIUS:

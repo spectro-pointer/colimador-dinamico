@@ -143,6 +143,6 @@ def start_webstreaming():
     t1.daemon = True
     t1.start()
 
-    app.run(host='0.0.0.0', port='8086', debug=True,
+    app.run(host='0.0.0.0', port='8084', debug=True,
         threaded=True, use_reloader=False)
 

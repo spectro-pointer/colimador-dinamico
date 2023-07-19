@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% block extra_style %}
+<style>
+    .slidecontainer {
+      width: 100%; /* Width of the outside container */
+    }
+
+    /* The slider itself */
+    .slider {
+      -webkit-appearance: none;  /* Override default CSS styles */
+      appearance: none;
+      width: 100%; /* Full-width */
+      height: 25px; /* Specified height */
+      background: #d3d3d3; /* Grey background */
+      outline: none; /* Remove outline */
+      opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+      -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+    }
+
+    /* Mouse-over effects */
+    .slider:hover {
+      opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px; /* Slider handle height */
+      background: #4CAF50; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+
+    .slider::-moz-range-thumb {
+      width: 25px; /* Set a specific slider handle width */
+      height: 25px; /* Slider handle height */
+      background: #4CAF50; /* Green background */
+      cursor: pointer; /* Cursor on hover */
+    }
+    /*body { background: #000000 !important; }*/
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    var slider = document.getElementById("thresholdRange");
+    var output = document.getElementById("sel_threshold");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+      output.innerHTML = this.value;
+    }
+</script>
+{% endblock %}
+
+
+{% block main_content %}
+<div class="container-fluid">
+    <div class="row bg-sp text-white shadow py-2 d-flex mb-2">
+        <div class="col-6 mt-0 pt-0 mb-0 pb-0">
+            <h4 class='pl-3'>Spectro-Pointer Video Streaming</h4>
+        </div>
+        <div class="col-6 mt-0 pt-0 mb-0 pb-0 d-flex flex-row-reverse">
+            <a href="/config" class="btn btn-primary bg-sp border-white" role="button" aria-pressed="true">Config</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 order-sm-1">
+                <div class="row mb-5">
+                    <img class='img-responsive rounded mx-auto d-block' src="{{ url_for('video_feed') }}" width = '70%' ><!--  style="width: 400px; height: 400px;"> -->
+                </div>
+                <hr noshade="noshade" />
+                <div class="row my-5">
+                    <img class='img-responsive rounded mx-auto d-block' src="{{ url_for('thr_feed') }}" width = '70%' ><!--  style="width: 400px; height: 400px;"> -->
+                </div>
+            </div>
+        </div>
+    </div>
+	<div>
+					<table>
+					<tr>
+						<th>
+						</th>
+						<th>
+							<button id="up">UP</button>
+						</th>
+						<th>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<button id="left">LEFT</button>
+						</th>
+						<th>
+							<button id="stop">STOP</button>
+						</th>
+						<th>
+							<button id="right">RIGHT</button>
+						</th>
+					</tr>
+					<tr>
+						<td>
+						</td>
+						<th>
+							<button id="down">DOWN</button>
+						</th>
+						<td>
+						</td>
+					</tr>
+					</table>
+				</div>
+				<div>
+					<table>
+					<tr>
+						<th>
+							ZOOM
+						</th>
+						<th>
+							<button id="zo">-</button>
+						</th>
+						<th>
+							<button id="ZO">+</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Motor
+						</th>
+						<th>
+							<button id="enableOFF" >OFF</button> 
+						</th>
+						<th>
+							<button id="enableON"> ON</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Speed
+						</th>
+						<th>
+							<button id="SPEEDON">-</button>
+						</th>
+						<th>
+							<button id="SpeedOFF">+</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							LED 
+						</th>
+						<th>
+							<button id="LEDoff">off</button>
+						</th>
+						<th>
+							<button id="LEDon">on</button>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							SERVO 
+						</th>
+						<th>
+							<button id="SERVOoff">OFF</button>
+						</th>
+						<th>
+							<button id="SERVOon">ON</button>
+						</th>
+					</tr>
+					</table>
+				</div>
+				<div>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<h5> valor maxino Azimut 19200 . Elavacion 7000 </h5>
+						<p>
+							 AZ,EL <input type="number" value="{{AZ}}" name="AZ" min="1" max="19200" step="0.0001"/>
+						</p>
+						<input type="submit" value="submit"/>
+					</form>
+					<form action="{{ url_for('addRegion') }}" method="post">
+						<table>
+						<td>
+							<p>
+								 A45 E 0 <input "submit" value="2400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A90 E 0 <input "submit" value="4800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A1355 E 0 <input "submit" value="7200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A180 E 0 <input "submit" value=" 9260.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A225 E 0 <input "submit" value="12000.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A270 E 0 <input "submit" value="14400.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A315 E 0 <input "submit" value="16800.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						<td>
+							<p>
+								 A360 E 0 <input "submit" value="19200.2469" name="AZ" input type="submit" value="Submit"/>
+							</p>
+						</td>
+						</table>
+					</form>
+				</div>
+			</th>
+		</tr>
+	</table>
+
+	
+	<script>
+	 $( document ).ready(function(){
+		$("#down").on("mousedown", function() {
+		  $.get('/down_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#up").on("mousedown", function() {
+		  $.get('/up_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#left").on("mousedown", function() {
+		  $.get('/left_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#right").on("mousedown", function() {
+		  $.get('/right_side');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		});
+		$("#ZO").on("mousedown", function() {
+		  $.get('/ZO_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#zo").on("mousedown", function() {
+		  $.get('/zo_side');
+		  }).on('mouseup', function() {
+		  $.get('/centro');
+		});
+		$("#enableON").on("mousedown", function() {
+		  $.get('/enableON_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableON_side');
+		});
+		$("#enableOFF").on("mousedown", function() {
+		  $.get('/enableOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/enableOFF_side');
+		});
+		$("#SPEEDON").on("mousedown", function() {
+		  $.get('/SPEEDON_side');
+		  }).on('mouseup', function() {
+		  $.get('/SPEEDON_side');
+		});
+		$("#SpeedOFF").on("mousedown", function() {
+		  $.get('/SpeedOFF_side');
+		  }).on('mouseup', function() {
+		  $.get('/SpeedOFF_side');
+		});
+		$("#LEDon").on("mousedown", function() {
+		  $.get('/LEDon_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDon_side');
+		});
+		$("#LEDoff").on("mousedown", function() {
+		  $.get('/LEDoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/LEDoff_side');
+		});  
+		$("#SERVOon").on("mousedown", function() {
+		  $.get('/SERVOon_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOon_side');
+		});
+		$("#SERVOoff").on("mousedown", function() {
+		  $.get('/SERVOoff_side');
+		  }).on('mouseup', function() {
+		  $.get('/SERVOoff_side');
+		});  
+		$("#stop").on("mousedown", function() {
+		  $.get('/stop');
+		  }).on('mouseup', function() {
+		  $.get('/stop');
+		}); 
+	 }); 
+	</script>
+</div>
+{% endblock %}
