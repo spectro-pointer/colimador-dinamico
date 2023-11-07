@@ -88,7 +88,8 @@ def set_up_leds():
             if DEBUG:
                 print("led %i is configured as output" % led)
             GPIO.setup(led, GPIO.OUT)
-            GPIO.setup(entrada,GPIO.IN) #gustavo
+            GPIO.setup(entrada, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # gustavo
+		
             
 
 def led_action(led, status):
