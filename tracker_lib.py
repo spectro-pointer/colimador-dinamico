@@ -7,6 +7,11 @@ __email__ = "pydev.ar@gmail.com"
 # Configuration options
 #from config import *
 from utils import *
+import struct
+
+PRA_DEFAULT = 0xFF
+PRB_DEFAULT = 0xFA
+ADDITIONAL_BYTES = 5
 
 # Constants to be defined.
 DEBUG = False  # Use for developers.
@@ -38,7 +43,7 @@ def nothing(a):
 #while not key == ord('q'):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
-#arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
+arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
 FOURCC = cv2.VideoWriter_fourcc(*'XVID')
@@ -58,6 +63,23 @@ else:
         print("Also make sure that you have installed the following module: pip install picamera[array]")
         sys.exit(0)
 
+def create_payload(cx, cy, visible):
+    # The format string '<2i?' indicates:
+    # '<' - little-endian,
+    # '2i' - two integers,
+    # '?' - one boolean value.
+    # Adjust the endianness and format according to your needs.
+    payload = struct.pack('<2i?', cx, cy, visible)
+    return payload
+	
+def encode(packet_id, payload):
+    # Calculate the checksum by summing all the bytes in the payload
+    checksum = sum(payload) & 0xFF  # Ensure checksum is a single byte
+
+    # Construct the packet with the preamble, packet ID, length, payload, and checksum
+    packet = bytearray([PRA_DEFAULT, PRB_DEFAULT, packet_id, len(payload)]) + bytearray(payload) + bytearray([checksum])
+    
+    return packet
 
 def set_up_leds():
     """
@@ -259,6 +281,17 @@ def check_quadrant(cx, cy):
     Green shows the positioning.
     Red shows that the camera is centered.
     """
+    visible = False 
+	
+    if cx < 0 or cy < 0:
+        visible = True
+    payload = create_payload(cx-320, cy-240, visible)
+	
+    # Now you can use the payload as input for the encode function
+    packet_id = 0x01  # Example packet ID
+    encoded_packet = encode(packet_id, payload)
+    arduino.write(encoded_packet)  # This will print the encoded packet as a bytearray 
+
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
         led_action(available_leds["LED_G_LEFT"], "off")
