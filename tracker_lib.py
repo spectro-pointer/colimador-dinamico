@@ -68,13 +68,13 @@ else:
         print("Also make sure that you have installed the following module: pip install picamera[array]")
         sys.exit(0)
 
-def create_payload(cx, cy, visible, Tx, Ty):
+def create_payload(cx, cy, Tx, Ty, visible):
     # The format string '<2i?' indicates:
     # '<' - little-endian,
     # '2i' - two integers,
     # '?' - one boolean value.
     # Adjust the endianness and format according to your needs.
-    payload = struct.pack('<2i?2i', cx, cy, visible, Tx, Ty)
+    payload = struct.pack('<4i?', cx, cy, Tx, Ty, visible)
     return payload
 	
 def encode(packet_id, payload):
@@ -294,7 +294,7 @@ def check_quadrant(cx, cy):
     Tx = int(123)
     Ty = int(456)
 
-    payload = create_payload(cx, cy, visible, Tx, Ty)
+    payload = create_payload(cx, cy, Tx, Ty, visible)
 	
     # Now you can use the payload as input for the encode function
     packet_id = 0x01  # Example packet ID
