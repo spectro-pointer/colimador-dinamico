@@ -291,8 +291,8 @@ def check_quadrant(cx, cy):
     if cx < 0 or cy < 0:
         visible = False 
 
-    Tx = int(123)
-    Ty = int(456)
+    Tx = int(SIZE[0])
+    Ty = int(SIZE[1])
 
     payload = create_payload(cx, cy, Tx, Ty, visible)
 	
