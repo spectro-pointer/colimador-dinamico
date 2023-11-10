@@ -22,10 +22,10 @@ CENTER_RADIUS = 20
 SHOW_CENTER_CIRCLE = True
 # Shows the center of the circle detected.
 
-THRESHOLD = 50  # modificado se ajusta desde la ventana 
+THRESHOLD = 230  # modificado se ajusta desde la ventana 
 # Threshold of brightness of lights to be detected (Range 0: darkest - 255 brightest)
 
-RESOLUTION = '192x192'
+RESOLUTION = '640x480'
 # Retrieves or sets the resolution at which image captures, video recordings, and previews will be captured.
 # The resolution can be specified as 'WIDTHxHEIGHT', or as a string containing a commonly recognized display resolution name
 # (e.g. “VGA”, “HD”, “1080p”, etc)
