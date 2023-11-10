@@ -281,10 +281,10 @@ def check_quadrant(cx, cy):
     Green shows the positioning.
     Red shows that the camera is centered.
     """
-    visible = False 
+    visible = True
 	
     if cx < 0 or cy < 0:
-        visible = True
+        visible = False
     payload = create_payload(cx-320, cy-240, visible)
 	
     # Now you can use the payload as input for the encode function
