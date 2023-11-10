@@ -290,7 +290,17 @@ def check_quadrant(cx, cy):
     # Now you can use the payload as input for the encode function
     packet_id = 0x01  # Example packet ID
     encoded_packet = encode(packet_id, payload)
-    arduino.write(encoded_packet)  # This will print the encoded packet as a bytearray 
+
+    # arduino.write(encoded_packet)  # This will print the encoded packet as a bytearray 
+
+    # String to send
+    message = "Hello world"
+
+    # Encode the string to bytes before sending
+    encoded_message = message.encode('utf-8')
+
+    # Send the encoded message
+    arduino.write(encoded_message)
 
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
