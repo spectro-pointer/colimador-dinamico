@@ -285,7 +285,7 @@ def check_quadrant(cx, cy):
 	
     if cx < 0 or cy < 0:
         visible = False
-    payload = create_payload(cx-320, cy-240, visible)
+    payload = create_payload(cx-320, -(cy-240), visible)
 	
     # Now you can use the payload as input for the encode function
     packet_id = 0x01  # Example packet ID
