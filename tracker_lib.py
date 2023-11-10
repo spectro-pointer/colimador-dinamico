@@ -299,13 +299,13 @@ def check_quadrant(cx, cy):
     # arduino.write(encoded_packet)  # This will print the encoded packet as a bytearray 
 
     # String to send
-    message = "Hello world"
+    #message = "Hello world"
 
     # Encode the string to bytes before sending
-    encoded_message = message.encode('utf-8')
+    #encoded_message = message.encode('utf-8')
 
     # Send the encoded message
-    arduino.write(encoded_message)
+    arduino.write(encoded_packet)
 
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
