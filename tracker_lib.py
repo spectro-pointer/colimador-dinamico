@@ -43,7 +43,12 @@ def nothing(a):
 #while not key == ord('q'):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
-arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
+
+try:
+    arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
+except:
+    arduino = serial.Serial('/dev/ttyACM1', 115200) ### gustavo
+
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
 FOURCC = cv2.VideoWriter_fourcc(*'XVID')
