@@ -14,7 +14,7 @@ class ConfigForm(FlaskForm):
     record_seconds            = StringField('record_seconds', validators=[Length(max=64)])
     threshold                 = StringField('threshold', validators=[Length(max=64)])
 
-    resolution                = SelectField('resolution', choices=[('192x192',"192x192"),('640x480',"640x480"),('1280x720',"1280x720"),('1920x1080',"1920x1080")])
+    resolution                = SelectField('resolution', choices=[('192x192',"192x192"),('320x240','320x240'),('640x480',"640x480"),('1280x720',"1280x720"),('1920x1080',"1920x1080")])
     framerate                 = StringField('framerate', validators=[Length(max=64)])
     sensor_mode               = StringField('sensor_mode', validators=[Length(max=64)])
     shutter_speed             = StringField('shutter_speed', validators=[Length(max=64)])
