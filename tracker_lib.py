@@ -33,6 +33,11 @@ import threading
 
 lock = threading.Lock()
 
+import socket
+
+teensy_servidor_ip = "192.168.1.101"  # Dirección IP del Teensy servidor
+teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
+
 def nothing(a):
     pass
 
@@ -44,10 +49,10 @@ def nothing(a):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
 
-try:
-    arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
-except:
-    arduino = serial.Serial('/dev/ttyACM1', 115200) ### gustavo
+#try:
+#    arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
+#except:
+#    arduino = serial.Serial('/dev/ttyACM1', 115200) ### gustavo
 
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
@@ -309,7 +314,10 @@ def check_quadrant(cx, cy):
     #encoded_message = message.encode('utf-8')
 
     # Send the encoded message
-    arduino.write(encoded_packet)
+
+    cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
+    cliente.close()
 
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
