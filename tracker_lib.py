@@ -35,7 +35,7 @@ lock = threading.Lock()
 
 import socket
 
-teensy_servidor_ip = "192.168.1.101"  # Dirección IP del Teensy servidor
+teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
 teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
 
 def nothing(a):
