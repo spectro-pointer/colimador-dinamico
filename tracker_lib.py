@@ -562,7 +562,7 @@ def process_and_store_light_points(new_points):
 
             all_light_points.append((name, current_time, new_x, new_y, current_time, 0, 0, 0, 0))
 
-    all_light_points = [(name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= constrain(map_range(current_time-firstSeen,0,10,0.1,3),0.1,3)]
+    all_light_points = [(name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= constrain(map_range(current_time-firstSeen,0,10,0.1,10),0.1,1)]
 
     # Your additional processing logic can go here
 
