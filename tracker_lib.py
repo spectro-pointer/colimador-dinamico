@@ -769,16 +769,6 @@ def camera_loop(app):
                 currentlyLocked = False
                 lockedName = "ABCD"
 
-        # Put in cx and cy the coordinates of the locked point
-        for i, (name, firstSeen, x, y, timestamp, _, _, _, _) in enumerate(all_light_points):
-            if (name == lockedName):
-                cx = x
-                cy = y
-                if (time.time()-timestamp < 0.2):
-                    isInView = True
-                else:
-                    isInView = False
-                break
 
         Tx = int(SIZE[0])
         Ty = int(SIZE[1])
@@ -796,7 +786,7 @@ def camera_loop(app):
             # Now you can use the unpacked data with meaningful names for further processing
             #print("Preamble:", list(preamble))
             #print("Joystick X:", joystickX)
-            print("Joystick Y:", joystickY)
+            #print("Joystick Y:", joystickY)
             # print("Joystick Button:", joystickBtn)
             # print("Switch Up:", swUp)
             # print("Switch Down:", swDown)
@@ -811,6 +801,67 @@ def camera_loop(app):
         if (isButtonPressed and currentlyLocked):
             currentlyLocked = False
             lockedName = "ABCD"
+
+        # If one of the 4 button is pressed, we want to change the locked point
+        # For example if the left button is pressed, we want to lock to the closest point on the left of the center of the picture
+        # So we first have to find :
+        # 1. The closest point on the left of the center of the picture
+        # 2. The closest point on the right of the center of the picture
+        # 3. The closest point on the top of the center of the picture
+        # 4. The closest point on the bottom of the center of the picture
+            
+        nameLeft = ""
+        nameRight = ""
+        nameUp = ""
+        nameDown = ""
+
+        for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
+            if (x < SIZE[0]/2):
+                if (nameLeft == ""):
+                    nameLeft = name
+                elif (abs(x - SIZE[0]/2) < abs(all_light_points[i-1][2] - SIZE[0]/2)):
+                    nameLeft = name
+            elif (x > SIZE[0]/2):
+                if (nameRight == ""):
+                    nameRight = name
+                elif (abs(x - SIZE[0]/2) < abs(all_light_points[i-1][2] - SIZE[0]/2)):
+                    nameRight = name
+            if (y < SIZE[1]/2):
+                if (nameUp == ""):
+                    nameUp = name
+                elif (abs(y - SIZE[1]/2) < abs(all_light_points[i-1][3] - SIZE[1]/2)):
+                    nameUp = name
+            elif (y > SIZE[1]/2):
+                if (nameDown == ""):
+                    nameDown = name
+                elif (abs(y - SIZE[1]/2) < abs(all_light_points[i-1][3] - SIZE[1]/2)):
+                    nameDown = name
+
+        # Now we have the name of the closest point on the left, right, top and bottom of the center of the picture
+        # We can now check which button is pressed and lock to the corresponding point
+        if (swLeft):
+            lockedName = nameLeft
+            currentlyLocked = True
+        elif (swRight):
+            lockedName = nameRight
+            currentlyLocked = True
+        elif (swUp):
+            lockedName = nameUp
+            currentlyLocked = True
+        elif (swDown):
+            lockedName = nameDown
+            currentlyLocked = True
+            
+                # Put in cx and cy the coordinates of the locked point
+        for i, (name, firstSeen, x, y, timestamp, _, _, _, _) in enumerate(all_light_points):
+            if (name == lockedName):
+                cx = x
+                cy = y
+                if (time.time()-timestamp < 0.2):
+                    isInView = True
+                else:
+                    isInView = False
+                break
 
         payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and not isButtonPressed)
         
@@ -852,7 +903,7 @@ def camera_loop(app):
         stream.truncate()
     cv2.destroyAllWindows()
 
-def generate(select_source):
+def generate(select_source):#
     # grab global references to the output frame and lock variables
     global outputFrame, lock
     # loop over frames from the output stream
