@@ -54,6 +54,16 @@ teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
 pc_servidor_ip = "192.168.1.181"
 pc_servidor_puerto = 8888
 
+UDP_IP = "0.0.0.0"
+UDP_PORT = 8888
+
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+client.bind((UDP_IP, UDP_PORT))
+
+# Set the socket to non-blocking mode
+client.setblocking(0)
+
+
 def nothing(a):
     pass
 
@@ -746,6 +756,29 @@ def camera_loop(app):
             
         # If we are currently locked and the lockedName is not in the list anymore, unlock
             
+        try:
+            data, addr = sock.recvfrom(1024)  # Adjust the buffer size as needed
+
+            # Assuming the first 3 bytes are preamble data, and the rest is 2 floats and 5 bools
+            preamble = data[:3]
+            joystickX, joystickY = struct.unpack('ff', data[3:11])  # 2 floats
+            joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('?????', data[11:])  # 5 bools
+
+            # Now you can use the unpacked data with meaningful names for further processing
+            print("Preamble:", list(preamble))
+            print("Joystick X:", joystickX)
+            print("Joystick Y:", joystickY)
+            print("Joystick Button:", joystickBtn)
+            print("Switch Up:", swUp)
+            print("Switch Down:", swDown)
+            print("Switch Left:", swLeft)
+            print("Switch Right:", swRight)
+
+        except socket.error as e:
+            # Handle the exception (e.g., check if it's a non-blocking error)
+            #print(f"Socket error: {e}")
+            pass
+
         isInView = False
         
         if (not currentlyLocked):
@@ -779,9 +812,8 @@ def camera_loop(app):
         packet_id = 0x01  # Example packet ID
         encoded_packet = encode(packet_id, payload)
 
-        cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
-        cliente.close()
+        client.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
+        client.close()
 
         # # For each point on the global list, show the estimated position using the function estimate_position
         # for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
