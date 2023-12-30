@@ -273,6 +273,19 @@ def show_center(image, cx, cy):
     cv2.circle(image, (cx, cy), int(CENTER_RADIUS/4), (80, 200, 80), -1) # -1 hace  el relleno del circulo
     return image
 
+def show_number_at_position(image, number, cx, cy):
+    """
+    Show a number at a given position on the image.
+    """
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 0.5
+    font_thickness = 1
+    font_color = (255, 255, 255)  # White color for the text
+
+    cv2.putText(image, str(number), (cx, cy), font, font_scale, font_color, font_thickness, cv2.LINE_AA)
+
+    return image
+
 
 def camera_test():
     """
@@ -486,6 +499,10 @@ def process_and_store_light_points(points):
     # Update the global list of all light points
     all_light_points = updated_light_points
 
+    # Show the number of all points on the global list using the function show_number_at_position
+    for i, (x, y, _) in enumerate(all_light_points):
+        frame = show_number_at_position(frame, i + 1, x, y)
+
     # Your additional processing logic can go here
 
     # Print the updated list of all light points
@@ -635,9 +652,12 @@ def camera_loop(app):
         # Create coordinates and show them as lines.
         frame = create_coordinates(frame)
 
+
         if SHOW_CENTER_CIRCLE:
             # Show center of circle detected
             frame = show_center(frame, cx, cy)
+
+
 
 
         # Takes photos and videos when contour is detected/centered.
