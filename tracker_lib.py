@@ -738,7 +738,7 @@ def camera_loop(app):
             frame = show_center(frame, cx, cy)
 
         # Show the number of all points on the global list using the function show_number_at_position
-        for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+        for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
             frame = show_number_at_position(frame, name, x, y)
 
         # For each point on the global list, find the first one that is close to the center of the picture
@@ -747,18 +747,18 @@ def camera_loop(app):
         # If we are currently locked and the lockedName is not in the list anymore, unlock
         
         if (not currentlyLocked):
-            for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+            for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
                 if (abs(x - SIZE[0]/2) <= CENTER_RADIUS and abs(y - SIZE[1]/2) <= CENTER_RADIUS):
                     lockedName = name
                     currentlyLocked = True
                     break
         else: 
-            if (not lockedName in [name for name, _, _, _, _, _, _, _ in all_light_points]):
+            if (not lockedName in [name for name, firstSeen, _, _, _, _, _, _, _ in all_light_points]):
                 currentlyLocked = False
                 lockedName = "ABCD"
 
         # Put in cx and cy the coordinates of the locked point
-        for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+        for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
             if (name == lockedName):
                 cx = x
                 cy = y
