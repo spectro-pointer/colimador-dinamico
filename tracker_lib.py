@@ -44,6 +44,11 @@ oldTime = time.time()
 lockedName = "ABCD"
 currentlyLocked = False
 isButtonPressed = False
+joystickBtn = False
+swUp = False
+swDown = False 
+swLeft = False 
+swRight = False
 
 # Threshold for proximity
 proximity_threshold = 50  # Adjust this value based on your requirements
@@ -692,7 +697,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed, joystickBtn, swUp, swDown, swLeft, swRight
     update_params(app)
     camera, stream = set_up_camera()
 
