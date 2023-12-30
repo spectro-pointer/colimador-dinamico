@@ -514,6 +514,7 @@ def process_and_store_light_points(new_points):
             if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed, existing_acceleration, existing_timestamp, current_time, proximity_threshold):
                 # Replace old point values with the most recent
                 speed, acceleration = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
+                print("Point %d updated: (%d, %d, %f, %f)" % (i + 1, new_x, new_y, speed, acceleration))
                 all_light_points[i] = (new_x, new_y, current_time, speed, acceleration)
                 point_found = True
                 break
@@ -523,12 +524,12 @@ def process_and_store_light_points(new_points):
             all_light_points.append((new_x, new_y, current_time, 0, 0))
 
     # Remove points older than 10 seconds
-    all_light_points = [(x, y, timestamp, speed, acceleration) for x, y, timestamp, speed, acceleration in all_light_points if current_time - timestamp <= 10]
+    all_light_points = [(x, y, timestamp, speed, acceleration) for x, y, timestamp, speed, acceleration in all_light_points if current_time - timestamp <= 3]
 
     # Your additional processing logic can go here
 
     # Print the updated list of all light points
-    print("All Light Points (last 10 seconds):", all_light_points)
+    # print("All Light Points (last 10 seconds):", all_light_points)
 
 def record_action(place, frame, take_photo, take_video):
     """
