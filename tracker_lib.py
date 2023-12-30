@@ -330,6 +330,8 @@ def check_quadrant(cx, cy, result):
     cliente.sendto(formatted_message.encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
     cliente.close()
 
+    print(formatted_message)
+
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
         led_action(available_leds["LED_G_LEFT"], "off")
