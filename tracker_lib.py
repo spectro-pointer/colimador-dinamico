@@ -757,7 +757,7 @@ def camera_loop(app):
         # If we are currently locked and the lockedName is not in the list anymore, unlock
             
         try:
-            data, addr = sock.recvfrom(1024)  # Adjust the buffer size as needed
+            data, addr = client.recvfrom(1024)  # Adjust the buffer size as needed
 
             # Assuming the first 3 bytes are preamble data, and the rest is 2 floats and 5 bools
             preamble = data[:3]
@@ -806,7 +806,7 @@ def camera_loop(app):
         Tx = int(SIZE[0])
         Ty = int(SIZE[1])
 
-        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView)
+        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and joystickBtn)
         
         # Now you can use the payload as input for the encode function
         packet_id = 0x01  # Example packet ID
