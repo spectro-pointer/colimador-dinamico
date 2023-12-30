@@ -721,7 +721,8 @@ def camera_loop(app):
             frame = show_number_at_position(frame, i + 1, x, y)
 
         # Print on the picture the real measured frame rate of the camera
-        cv2.putText(frame, "FPS: %.2f" % 1/(time.time()-oldTime), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        frequency = 1.0/(time.time()-oldTime)
+        cv2.putText(frame, "FPS: %.2f" % frequency, (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         oldTime = time.time()
 
         # Takes photos and videos when contour is detected/centered.
