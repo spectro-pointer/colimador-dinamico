@@ -43,6 +43,7 @@ all_light_points = []
 oldTime = time.time()
 lockedName = "ABCD"
 currentlyLocked = False
+isButtonPressed = False
 
 # Threshold for proximity
 proximity_threshold = 50  # Adjust this value based on your requirements
@@ -91,7 +92,8 @@ else:
         print("Also make sure that you have installed the following module: pip install picamera[array]")
         sys.exit(0)
 
-def create_payload(cx, cy, Tx, Ty, visible):
+def create_payload(cx, cy, Tx, Ty, visible
+                   ):
     # The format string '<2i?' indicates:
     # '<' - little-endian,
     # '2i' - two integers,
@@ -684,7 +686,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed
     update_params(app)
     camera, stream = set_up_camera()
 
@@ -775,13 +777,6 @@ def camera_loop(app):
         Tx = int(SIZE[0])
         Ty = int(SIZE[1])
 
-        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and joystickBtn)
-        
-        # Now you can use the payload as input for the encode function
-        packet_id = 0x01  # Example packet ID
-        encoded_packet = encode(packet_id, payload)
-
-
         client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client.bind((UDP_IP, UDP_PORT))
 
@@ -797,6 +792,8 @@ def camera_loop(app):
             joystickX, joystickY = struct.unpack('ff', data[3:11])  # 2 floats
             joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('?????', data[11:16])  # 5 bools
 
+            isButtonPressed = joystickBtn
+
             # Now you can use the unpacked data with meaningful names for further processing
             print("Preamble:", list(preamble))
             print("Joystick X:", joystickX)
@@ -811,7 +808,12 @@ def camera_loop(app):
             # Handle the exception (e.g., check if it's a non-blocking error)
             #print(f"Socket error: {e}")
             pass
-
+        
+        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and isButtonPressed)
+        
+        # Now you can use the payload as input for the encode function
+        packet_id = 0x01  # Example packet ID
+        encoded_packet = encode(packet_id, payload)
     
         client.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
         client.close()
