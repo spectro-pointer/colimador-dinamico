@@ -30,6 +30,8 @@ import os
 import numpy as np
 from flask import Response
 import threading
+import random
+import string
 
 lock = threading.Lock()
 
@@ -274,7 +276,7 @@ def show_center(image, cx, cy):
     cv2.circle(image, (cx, cy), int(CENTER_RADIUS/4), (80, 200, 80), -1) # -1 hace  el relleno del circulo
     return image
 
-def show_number_at_position(image, number, cx, cy):
+def show_number_at_position(image, name, cx, cy):
     """
     Show a number at a given position on the image.
     """
@@ -283,7 +285,7 @@ def show_number_at_position(image, number, cx, cy):
     font_thickness = 1
     font_color = (0, 0, 255)  # White color for the text
 
-    cv2.putText(image, str(number), (cx, cy), font, font_scale, font_color, font_thickness, cv2.LINE_AA)
+    cv2.putText(image, name, (cx, cy), font, font_scale, font_color, font_thickness, cv2.LINE_AA)
 
     return image
 
@@ -532,21 +534,26 @@ def process_and_store_light_points(new_points):
     for new_x, new_y in new_points:
         point_found = False
 
-        for i, (existing_x, existing_y, existing_timestamp, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y)in enumerate(all_light_points):
+        for i, (existing_name, existing_x, existing_y, existing_timestamp, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y)in enumerate(all_light_points):
             if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y, existing_timestamp, current_time, proximity_threshold):
                 # Replace old point values with the most recent and compute new acceleration and speed
                 speed_x, speed_y, acceleration_x, acceleration_y = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
                 #  print("Point %d updated: (%d, %d, %f, %f, %f, %f)" % (i + 1, new_x, new_y, speed_x, speed_y, acceleration_x, acceleration_y))
-                all_light_points[i] = (new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
+                all_light_points[i] = (existing_name, new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
                 point_found = True
                 break
 
         if not point_found:
             # Add new point to the list with acceleration and speed = 0 for both x and y
-            all_light_points.append((new_x, new_y, current_time, 0, 0, 0, 0))
+
+            # Make sure the name doesn't already exist in the current list:
+            while name in [existing_name for existing_name, _, _, _, _, _, _, _ in all_light_points]:
+                name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
+
+            all_light_points.append((name, new_x, new_y, current_time, 0, 0, 0, 0))
 
     # Remove points older than 10 seconds
-    all_light_points = [(x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 0.5]
+    all_light_points = [(name, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for name, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 0.5]
 
     # Your additional processing logic can go here
 
@@ -734,13 +741,13 @@ def camera_loop(app):
             frame = show_center(frame, cx, cy)
 
         # Show the number of all points on the global list using the function show_number_at_position
-        for i, (x, y, _, _, _, _, _) in enumerate(all_light_points):
-            frame = show_number_at_position(frame, i + 1, x, y)
+        for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+            frame = show_number_at_position(frame, name, x, y)
 
-        # For each point on the global list, show the estimated position using the function estimate_position
-        for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
-            estimated_x, estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
-            frame = show_number_at_position(frame, i + 1, int(estimated_x), int(estimated_y))
+        # # For each point on the global list, show the estimated position using the function estimate_position
+        # for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
+        #     estimated_x, estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
+        #     frame = show_number_at_position(frame, i + 1, int(estimated_x), int(estimated_y))
 
         # Print on the picture the real measured frame rate of the camera
         frequency = 1.0/(time.time()-oldTime)
