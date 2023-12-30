@@ -680,7 +680,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked
     update_params(app)
     camera, stream = set_up_camera()
 
