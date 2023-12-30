@@ -480,8 +480,8 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
     estimated_y = y1 + speed_y1 * delta_t + 0.5 * acceleration_y1 * delta_t**2
 
     # The threshold for each axis should be adjusted depending on the speed and acceleration of the object
-    thresholdx = constrain(map_range(abs(acceleration_x1), 0, 200, 25, 150),10,150)
-    thresholdy = constrain(map_range(abs(acceleration_y1), 0, 200, 25, 150),10,150)
+    thresholdx = constrain(map_range(abs(speed_x1), 0, 200, 25, 75),10,75)
+    thresholdy = constrain(map_range(abs(speed_y1), 0, 200, 25, 75),10,75)
 
     # Check if the new position is close to the estimated position
     position_close = abs(x2 - estimated_x) <= thresholdx and abs(y2 - estimated_y) <= thresholdy
