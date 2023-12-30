@@ -511,14 +511,14 @@ def calculate_speed_and_acceleration(last_position, current_position, last_times
     speed_x = delta_x / delta_t
     speed_y = delta_y / delta_t
 
-    speed_x = speed_x*0.5
-    speed_y = speed_y*0.5
+    speed_x = speed_x*1.0
+    speed_y = speed_y*1.0
 
     acceleration_x = speed_x / delta_t
     acceleration_y = speed_y / delta_t
 
-    acceleration_x = acceleration_x*0.5
-    acceleration_y = acceleration_y*0.5
+    acceleration_x = acceleration_x*1.0
+    acceleration_y = acceleration_y*1.0
 
     return speed_x, speed_y, acceleration_x, acceleration_y
 
