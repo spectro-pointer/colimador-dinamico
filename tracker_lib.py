@@ -482,6 +482,17 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
 
     return position_close
 
+def estimate_position(last_position, speed_x, speed_y, acceleration_x, acceleration_y, last_timestamp, current_timestamp):
+    """
+    Estimate the current position based on the last known position, speed, and acceleration for both x and y.
+    """
+    delta_t = current_timestamp - last_timestamp
+
+    estimated_x = last_position[0] + speed_x * delta_t + 0.5 * acceleration_x * delta_t**2
+    estimated_y = last_position[1] + speed_y * delta_t + 0.5 * acceleration_y * delta_t**2
+
+    return estimated_x, estimated_y
+
 def calculate_speed_and_acceleration(last_position, current_position, last_timestamp, current_timestamp):
     """
     Calculate speed and acceleration given the last and current positions and timestamps for each coordinate (x and y).
@@ -719,6 +730,11 @@ def camera_loop(app):
         # Show the number of all points on the global list using the function show_number_at_position
         for i, (x, y, _, _, _, _, _) in enumerate(all_light_points):
             frame = show_number_at_position(frame, i + 1, x, y)
+
+        # For each point on the global list, show the estimated position using the function estimate_position
+        for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
+            estimated_x, estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
+            frame = show_number_at_position(frame, i + 1, int(estimated_x), int(estimated_y))
 
         # Print on the picture the real measured frame rate of the camera
         frequency = 1.0/(time.time()-oldTime)
