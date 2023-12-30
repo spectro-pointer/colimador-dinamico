@@ -466,15 +466,15 @@ def obtain_top_contours(b_frame, n=10):
     return top_contours
 
 
-def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed1, acceleration1, timestamp1, timestamp2, threshold):
+def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, acceleration_x1, acceleration_y1, timestamp1, timestamp2, threshold):
     """
     Check if two points are close to each other based on the estimated position.
     """
     delta_t = timestamp2 - timestamp1
 
-    # Estimate the next position based on the last known position, speed, and acceleration
-    estimated_x = x1 + speed1 * delta_t + 0.5 * acceleration1 * delta_t**2
-    estimated_y = y1 + speed1 * delta_t + 0.5 * acceleration1 * delta_t**2
+    # Estimate the next position based on the last known position, speed, and acceleration for both x and y
+    estimated_x = x1 + speed_x1 * delta_t + 0.5 * acceleration_x1 * delta_t**2
+    estimated_y = y1 + speed_y1 * delta_t + 0.5 * acceleration_y1 * delta_t**2
 
     # Check if the new position is close to the estimated position
     position_close = abs(x2 - estimated_x) <= threshold and abs(y2 - estimated_y) <= threshold
@@ -483,22 +483,26 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed1, acceleration1,
 
 def calculate_speed_and_acceleration(last_position, current_position, last_timestamp, current_timestamp):
     """
-    Calculate speed and acceleration given the last and current positions and timestamps.
+    Calculate speed and acceleration given the last and current positions and timestamps for each coordinate (x and y).
     """
     if last_position is None or last_timestamp is None:
-        return 0, 0
+        return 0, 0, 0, 0  # Initial values for speed and acceleration
 
     delta_t = current_timestamp - last_timestamp
     if delta_t == 0:
-        return 0, 0
+        return 0, 0, 0, 0  # Avoid division by zero
 
     delta_x = current_position[0] - last_position[0]
     delta_y = current_position[1] - last_position[1]
 
-    speed = ((delta_x / delta_t) ** 2 + (delta_y / delta_t) ** 2) ** 0.5
-    acceleration = speed / delta_t
+    # Calculate speed and acceleration for both x and y coordinates
+    speed_x = delta_x / delta_t
+    speed_y = delta_y / delta_t
 
-    return speed, acceleration
+    acceleration_x = speed_x / delta_t
+    acceleration_y = speed_y / delta_t
+
+    return speed_x, speed_y, acceleration_x, acceleration_y
 
 def process_and_store_light_points(new_points):
     global all_light_points
@@ -510,26 +514,57 @@ def process_and_store_light_points(new_points):
     for new_x, new_y in new_points:
         point_found = False
 
-        for i, (existing_x, existing_y, existing_timestamp, existing_speed, existing_acceleration) in enumerate(all_light_points):
-            if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed, existing_acceleration, existing_timestamp, current_time, proximity_threshold):
-                # Replace old point values with the most recent
-                speed, acceleration = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
-                print("Point %d updated: (%d, %d, %f, %f)" % (i + 1, new_x, new_y, speed, acceleration))
-                all_light_points[i] = (new_x, new_y, current_time, speed, acceleration)
+        for i, (existing_x, existing_y, existing_timestamp, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y)in enumerate(all_light_points):
+            if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y, existing_timestamp, current_time, proximity_threshold):
+                # Replace old point values with the most recent and compute new acceleration and speed
+                speed_x, speed_y, acceleration_x, acceleration_y = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
+                print("Point %d updated: (%d, %d, %f, %f)" % (i + 1, new_x, new_y, speed_x, speed_y, acceleration_x, acceleration_y))
+                all_light_points[i] = (new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
                 point_found = True
                 break
 
         if not point_found:
-            # Add new point to the list with acceleration and speed = 0
-            all_light_points.append((new_x, new_y, current_time, 0, 0))
+            # Add new point to the list with acceleration and speed = 0 for both x and y
+            all_light_points.append((new_x, new_y, current_time, 0, 0, 0, 0))
 
     # Remove points older than 10 seconds
-    all_light_points = [(x, y, timestamp, speed, acceleration) for x, y, timestamp, speed, acceleration in all_light_points if current_time - timestamp <= 3]
+    all_light_points = [(x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 3]
 
     # Your additional processing logic can go here
 
     # Print the updated list of all light points
-    # print("All Light Points (last 10 seconds):", all_light_points)
+    #print("All Light Points (last 3 seconds):", all_light_points)
+
+# def process_and_store_light_points(new_points):
+#     global all_light_points
+
+#     # Get the current timestamp
+#     current_time = time.time()
+
+#     # Process new points
+#     for new_x, new_y in new_points:
+#         point_found = False
+
+#         for i, (existing_x, existing_y, existing_timestamp, existing_speed, existing_acceleration) in enumerate(all_light_points):
+#             if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed, existing_acceleration, existing_timestamp, current_time, proximity_threshold):
+#                 # Replace old point values with the most recent
+#                 speed, acceleration = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
+#                 print("Point %d updated: (%d, %d, %f, %f)" % (i + 1, new_x, new_y, speed, acceleration))
+#                 all_light_points[i] = (new_x, new_y, current_time, speed, acceleration)
+#                 point_found = True
+#                 break
+
+#         if not point_found:
+#             # Add new point to the list with acceleration and speed = 0
+#             all_light_points.append((new_x, new_y, current_time, 0, 0))
+
+#     # Remove points older than 10 seconds
+#     all_light_points = [(x, y, timestamp, speed, acceleration) for x, y, timestamp, speed, acceleration in all_light_points if current_time - timestamp <= 3]
+
+#     # Your additional processing logic can go here
+
+#     # Print the updated list of all light points
+#     # print("All Light Points (last 10 seconds):", all_light_points)
 
 def record_action(place, frame, take_photo, take_video):
     """
@@ -681,7 +716,7 @@ def camera_loop(app):
             frame = show_center(frame, cx, cy)
 
         # Show the number of all points on the global list using the function show_number_at_position
-        for i, (x, y, _, _, _) in enumerate(all_light_points):
+        for i, (x, y, _, _, _, _, _) in enumerate(all_light_points):
             frame = show_number_at_position(frame, i + 1, x, y)
 
 
