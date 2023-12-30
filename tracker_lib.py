@@ -287,7 +287,7 @@ def camera_test():
     cv2.destroyAllWindows()
 
 
-def check_quadrant(cx, cy):
+def check_quadrant(cx, cy, result):
     """
     Obtain in which quadrant the light is,
     and turn on corresponding leds:
@@ -320,7 +320,14 @@ def check_quadrant(cx, cy):
 
     cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
-    cliente.sendto("hola".encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
+
+    # Select the top 3 points
+    top_3_points = result[:3]
+
+    # Format the message
+    formatted_message = " ".join([f"Point{i + 1}: {x},{y}" for i, (x, y) in enumerate(top_3_points)])
+
+    cliente.sendto(formatted_message.encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
     cliente.close()
 
     global available_leds
@@ -570,11 +577,10 @@ def camera_loop(app):
         cx, cy = obtain_single_contour(b_frame)
         result = obtain_top_contours(b_frame, 10)
 
-
         # Check in which quadrant the center of the contour is
         # And show it in the leds.
         # Returns the place where the contour is.
-        place = check_quadrant(cx, cy)
+        place = check_quadrant(cx, cy, result)
 
         # Create coordinates and show them as lines.
         frame = create_coordinates(frame)
