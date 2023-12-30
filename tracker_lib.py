@@ -57,6 +57,12 @@ pc_servidor_ip = "192.168.1.181"
 UDP_IP = "192.168.1.114"
 UDP_PORT = 8888
 
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+client.bind((UDP_IP, UDP_PORT))
+
+# Set the socket to non-blocking mode
+client.setblocking(0)
+
 def nothing(a):
     pass
 
@@ -776,12 +782,6 @@ def camera_loop(app):
 
         Tx = int(SIZE[0])
         Ty = int(SIZE[1])
-
-        client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        client.bind((UDP_IP, UDP_PORT))
-
-        # Set the socket to non-blocking mode
-        client.setblocking(0)
           
         try:
             data, addr = client.recvfrom(1024)  # Adjust the buffer size as needed
@@ -815,7 +815,7 @@ def camera_loop(app):
         encoded_packet = encode(packet_id, payload)
     
         client.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
-        client.close()
+        #client.close()
 
         # # For each point on the global list, show the estimated position using the function estimate_position
         # for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
