@@ -807,7 +807,11 @@ def camera_loop(app):
             # Handle the exception (e.g., check if it's a non-blocking error)
             #print(f"Socket error: {e}")
             pass
-        
+
+        if (isButtonPressed and currentlyLocked):
+            currentlyLocked = False
+            lockedName = "ABCD"
+
         payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and not isButtonPressed)
         
         # Now you can use the payload as input for the encode function
