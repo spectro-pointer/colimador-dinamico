@@ -511,8 +511,14 @@ def calculate_speed_and_acceleration(last_position, current_position, last_times
     speed_x = delta_x / delta_t
     speed_y = delta_y / delta_t
 
+    speed_x = speed_x*0.5
+    speed_y = speed_y*0.5
+
     acceleration_x = speed_x / delta_t
     acceleration_y = speed_y / delta_t
+
+    acceleration_x = acceleration_x*0.5
+    acceleration_y = acceleration_y*0.5
 
     return speed_x, speed_y, acceleration_x, acceleration_y
 
@@ -540,7 +546,7 @@ def process_and_store_light_points(new_points):
             all_light_points.append((new_x, new_y, current_time, 0, 0, 0, 0))
 
     # Remove points older than 10 seconds
-    all_light_points = [(x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 3]
+    all_light_points = [(x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 0.5]
 
     # Your additional processing logic can go here
 
