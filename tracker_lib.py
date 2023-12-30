@@ -518,7 +518,7 @@ def process_and_store_light_points(new_points):
             if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y, existing_timestamp, current_time, proximity_threshold):
                 # Replace old point values with the most recent and compute new acceleration and speed
                 speed_x, speed_y, acceleration_x, acceleration_y = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
-                print("Point %d updated: (%d, %d, %f, %f)" % (i + 1, new_x, new_y, speed_x, speed_y, acceleration_x, acceleration_y))
+                print("Point %d updated: (%d, %d, %f, %f, %f, %f)" % (i + 1, new_x, new_y, speed_x, speed_y, acceleration_x, acceleration_y))
                 all_light_points[i] = (new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
                 point_found = True
                 break
