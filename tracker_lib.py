@@ -794,21 +794,21 @@ def camera_loop(app):
             isButtonPressed = joystickBtn
 
             # Now you can use the unpacked data with meaningful names for further processing
-            print("Preamble:", list(preamble))
-            print("Joystick X:", joystickX)
-            print("Joystick Y:", joystickY)
-            print("Joystick Button:", joystickBtn)
-            print("Switch Up:", swUp)
-            print("Switch Down:", swDown)
-            print("Switch Left:", swLeft)
-            print("Switch Right:", swRight)
+            # print("Preamble:", list(preamble))
+            # print("Joystick X:", joystickX)
+            # print("Joystick Y:", joystickY)
+            # print("Joystick Button:", joystickBtn)
+            # print("Switch Up:", swUp)
+            # print("Switch Down:", swDown)
+            # print("Switch Left:", swLeft)
+            # print("Switch Right:", swRight)
 
         except socket.error as e:
             # Handle the exception (e.g., check if it's a non-blocking error)
             #print(f"Socket error: {e}")
             pass
         
-        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and isButtonPressed)
+        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView and not isButtonPressed)
         
         # Now you can use the payload as input for the encode function
         packet_id = 0x01  # Example packet ID
