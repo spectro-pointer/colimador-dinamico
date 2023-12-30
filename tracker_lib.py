@@ -794,9 +794,9 @@ def camera_loop(app):
             isButtonPressed = joystickBtn
 
             # Now you can use the unpacked data with meaningful names for further processing
-            # print("Preamble:", list(preamble))
-            # print("Joystick X:", joystickX)
-            # print("Joystick Y:", joystickY)
+            #print("Preamble:", list(preamble))
+            #print("Joystick X:", joystickX)
+            print("Joystick Y:", joystickY)
             # print("Joystick Button:", joystickBtn)
             # print("Switch Up:", swUp)
             # print("Switch Down:", swDown)
