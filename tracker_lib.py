@@ -789,7 +789,7 @@ def camera_loop(app):
             # Assuming the first 4 bytes are preamble data, and the rest is 2 floats and 5 bools
             preamble = data[:4]
             joystickX, joystickY = struct.unpack('ff', data[4:12])  # 2 floats
-            joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('iiiii', data[12:17])  # 5 bools
+            joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('bbbbb', data[12:17])  # 5 bools
 
             isButtonPressed = joystickBtn
 
