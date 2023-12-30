@@ -41,7 +41,7 @@ all_light_points = []
 oldTime = time.time()
 
 # Threshold for proximity
-proximity_threshold = 10  # Adjust this value based on your requirements
+proximity_threshold = 25  # Adjust this value based on your requirements
 
 
 teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
