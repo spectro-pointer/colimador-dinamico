@@ -778,7 +778,7 @@ def camera_loop(app):
         Ty = int(SIZE[1])
 
         client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #client.bind((UDP_IP, UDP_PORT))
+        client.bind((UDP_IP, UDP_PORT))
 
         # Set the socket to non-blocking mode
         client.setblocking(0)
