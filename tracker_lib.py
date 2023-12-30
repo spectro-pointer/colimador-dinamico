@@ -470,8 +470,8 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
     estimated_y = y1 + speed_y1 * delta_t + 0.5 * acceleration_y1 * delta_t**2
 
     # The threshold for each axis should be adjusted depending on the speed and acceleration of the object
-    thresholdx = map_range(abs(speed_x1), 0, 100, 10, 50)
-    thresholdy = map_range(abs(speed_y1), 0, 100, 10, 50)
+    thresholdx = constrain(map_range(abs(speed_x1), 0, 200, 10, 100),10,100)
+    thresholdy = constrain(map_range(abs(speed_y1), 0, 200, 10, 100),10,100)
 
     # Check if the new position is close to the estimated position
     position_close = abs(x2 - estimated_x) <= thresholdx and abs(y2 - estimated_y) <= thresholdy
@@ -480,6 +480,9 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
 
 def map_range(x, in_min, in_max, out_min, out_max):
   return (x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min
+
+def constrain(val, min_val, max_val):
+    return min(max_val, max(min_val, val))
 
 def estimate_position(last_position, speed_x, speed_y, acceleration_x, acceleration_y, last_timestamp, current_timestamp):
     """
@@ -531,12 +534,12 @@ def process_and_store_light_points(new_points):
     for new_x, new_y in new_points:
         point_found = False
 
-        for i, (existing_name, existing_x, existing_y, existing_timestamp, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y)in enumerate(all_light_points):
+        for i, (existing_name, existing_firstSeen, existing_x, existing_y, existing_timestamp, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y)in enumerate(all_light_points):
             if is_point_close_with_motion_estimation(existing_x, existing_y, new_x, new_y, existing_speed_x, existing_speed_y, existing_acceleration_x, existing_acceleration_Y, existing_timestamp, current_time, proximity_threshold):
                 # Replace old point values with the most recent and compute new acceleration and speed
                 speed_x, speed_y, acceleration_x, acceleration_y = calculate_speed_and_acceleration((existing_x, existing_y), (new_x, new_y), existing_timestamp, current_time)
                 #  print("Point %d updated: (%d, %d, %f, %f, %f, %f)" % (i + 1, new_x, new_y, speed_x, speed_y, acceleration_x, acceleration_y))
-                all_light_points[i] = (existing_name, new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
+                all_light_points[i] = (existing_name, existing_firstSeen, new_x, new_y, current_time, speed_x, speed_y, acceleration_x, acceleration_y)
                 point_found = True
                 break
 
@@ -547,10 +550,9 @@ def process_and_store_light_points(new_points):
             while name in [existing_name for existing_name, _, _, _, _, _, _, _ in all_light_points]:
                 name = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4))
 
-            all_light_points.append((name, new_x, new_y, current_time, 0, 0, 0, 0))
+            all_light_points.append((name,current_time, new_x, new_y, current_time, 0, 0, 0, 0))
 
-    # Remove points older than 10 seconds
-    all_light_points = [(name, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for name, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= 0.5]
+    all_light_points = [(name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) for name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y in all_light_points if current_time - timestamp <= constrain(map_range(current_time-firstSeen,0,10,0.1,3),0.1,3)]
 
     # Your additional processing logic can go here
 
