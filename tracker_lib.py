@@ -78,7 +78,7 @@ else:
 
         from picamera.array import PiRGBArray
         from picamera import PiCamera
-        PiCamera.ISO = 800
+        PiCamera.ISO = 100
     except ImportError:
         print("Error: picamera module not recognized. Make sure you are using a Raspberry.")
         print("Also make sure that you have installed the following module: pip install picamera[array]")
