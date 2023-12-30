@@ -38,6 +38,7 @@ import time
 
 # Global variable to store the list of all light points seen in the last 30 seconds
 all_light_points = []
+oldTime = time.time()
 
 # Threshold for proximity
 proximity_threshold = 10  # Adjust this value based on your requirements
@@ -658,7 +659,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime
     update_params(app)
     camera, stream = set_up_camera()
 
