@@ -745,6 +745,8 @@ def camera_loop(app):
         # and save its name in the lockedName variable
             
         # If we are currently locked and the lockedName is not in the list anymore, unlock
+            
+        isInView = False
         
         if (not currentlyLocked):
             for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
@@ -758,16 +760,20 @@ def camera_loop(app):
                 lockedName = "ABCD"
 
         # Put in cx and cy the coordinates of the locked point
-        for i, (name, firstSeen, x, y, _, _, _, _, _) in enumerate(all_light_points):
+        for i, (name, firstSeen, x, y, timestamp, _, _, _, _) in enumerate(all_light_points):
             if (name == lockedName):
                 cx = x
                 cy = y
+                if (time.time()-timestamp < 0.2):
+                    isInView = True
+                else:
+                    isInView = False
                 break
 
         Tx = int(SIZE[0])
         Ty = int(SIZE[1])
 
-        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked)
+        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked and isInView)
         
         # Now you can use the payload as input for the encode function
         packet_id = 0x01  # Example packet ID
