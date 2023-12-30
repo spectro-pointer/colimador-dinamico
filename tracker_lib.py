@@ -34,6 +34,14 @@ import threading
 lock = threading.Lock()
 
 import socket
+import time
+
+# Global variable to store the list of all light points seen in the last 30 seconds
+all_light_points = []
+
+# Threshold for proximity
+proximity_threshold = 5  # Adjust this value based on your requirements
+
 
 teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
 teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
@@ -330,7 +338,7 @@ def check_quadrant(cx, cy, result):
     cliente.sendto(formatted_message.encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
     cliente.close()
 
-    print(formatted_message)
+    # print(formatted_message)
 
     global available_leds
     if GPIO.input(entrada) == GPIO.LOW:   # funcion para el auto tracking con la activacion alta del pin entrada 40 
@@ -444,6 +452,44 @@ def obtain_top_contours(b_frame, n=10):
 
     return top_contours
 
+
+def is_point_close(x1, y1, x2, y2, threshold):
+    """
+    Check if two points are close to each other based on the threshold.
+    """
+    return abs(x1 - x2) <= threshold and abs(y1 - y2) <= threshold
+
+def process_and_store_light_points(points):
+    global all_light_points
+
+    # Get the current timestamp
+    current_time = time.time()
+
+    # Update existing points and filter out points older than 30 seconds
+    updated_light_points = []
+
+    for existing_point in all_light_points:
+        x_existing, y_existing, timestamp_existing = existing_point
+
+        # Check if the existing point is close to any of the new points
+        found = any(is_point_close(x_existing, y_existing, x, y, proximity_threshold) for x, y in points)
+
+        # If the existing point is not found in the new points, check if it's older than 30 seconds
+        if not found and current_time - timestamp_existing <= 30:
+            updated_light_points.append(existing_point)
+
+    # Append new points that are not already in the list
+    for x, y in points:
+        if not any(is_point_close(x_existing, y_existing, x, y, proximity_threshold) for x_existing, y_existing, _ in updated_light_points):
+            updated_light_points.append((x, y, current_time))
+
+    # Update the global list of all light points
+    all_light_points = updated_light_points
+
+    # Your additional processing logic can go here
+
+    # Print the updated list of all light points
+    print("All Light Points (last 30 seconds):", all_light_points)
 
 def record_action(place, frame, take_photo, take_video):
     """
@@ -578,6 +624,8 @@ def camera_loop(app):
         # Obtain a single contour.
         cx, cy = obtain_single_contour(b_frame)
         result = obtain_top_contours(b_frame, 10)
+
+        process_and_store_light_points(result)
 
         # Check in which quadrant the center of the contour is
         # And show it in the leds.
