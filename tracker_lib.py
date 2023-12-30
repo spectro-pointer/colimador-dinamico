@@ -38,6 +38,9 @@ import socket
 teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
 teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
 
+pc_servidor_ip = "192.168.1.181"
+pc_servidor_puerto = 8888
+
 def nothing(a):
     pass
 
@@ -317,6 +320,7 @@ def check_quadrant(cx, cy):
 
     cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
+    cliente.sendto("hola".encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
     cliente.close()
 
     global available_leds
@@ -400,6 +404,36 @@ def obtain_single_contour(b_frame):
         if M['m00'] != 0:
             cx, cy = int(M['m10']/M['m00']), int(M['m01']/M['m00'])
     return cx, cy
+
+
+def obtain_top_contours(b_frame, n=10):
+    """
+    Obtain the top n x and y coordinates of the brightest contours.
+    When none is found, it returns a list of (-1, -1).
+    """
+    try:
+        contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    except ValueError:
+        _, contours, _h = cv2.findContours(b_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    if not contours:
+        return [(-1, -1)] * n
+
+    contour_brightness = []
+
+    for blob in contours:
+        M = cv2.moments(blob)
+        if M['m00'] != 0:
+            cx, cy = int(M['m10'] / M['m00']), int(M['m01'] / M['m00'])
+            contour_brightness.append(((cx, cy), cv2.contourArea(blob)))
+
+    # Sort contours based on brightness
+    sorted_contours = sorted(contour_brightness, key=lambda x: x[1], reverse=True)
+
+    # Return the top n contours
+    top_contours = [point for point, _ in sorted_contours[:n]]
+
+    return top_contours
 
 
 def record_action(place, frame, take_photo, take_video):
@@ -534,6 +568,9 @@ def camera_loop(app):
 
         # Obtain a single contour.
         cx, cy = obtain_single_contour(b_frame)
+        result = obtain_top_contours(b_frame, 10)
+        clien
+
 
         # Check in which quadrant the center of the contour is
         # And show it in the leds.
