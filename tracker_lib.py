@@ -680,7 +680,7 @@ def camera_loop(app):
             frame = show_center(frame, cx, cy)
 
         # Show the number of all points on the global list using the function show_number_at_position
-        for i, (x, y, _) in enumerate(all_light_points):
+        for i, (x, y, _, _, _) in enumerate(all_light_points):
             frame = show_number_at_position(frame, i + 1, x, y)
 
 
