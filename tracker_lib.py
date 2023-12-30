@@ -499,10 +499,6 @@ def process_and_store_light_points(points):
     # Update the global list of all light points
     all_light_points = updated_light_points
 
-    # Show the number of all points on the global list using the function show_number_at_position
-    for i, (x, y, _) in enumerate(all_light_points):
-        frame = show_number_at_position(frame, i + 1, x, y)
-
     # Your additional processing logic can go here
 
     # Print the updated list of all light points
@@ -657,7 +653,9 @@ def camera_loop(app):
             # Show center of circle detected
             frame = show_center(frame, cx, cy)
 
-
+        # Show the number of all points on the global list using the function show_number_at_position
+        for i, (x, y, _) in enumerate(all_light_points):
+            frame = show_number_at_position(frame, i + 1, x, y)
 
 
         # Takes photos and videos when contour is detected/centered.
