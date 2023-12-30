@@ -569,7 +569,6 @@ def camera_loop(app):
         # Obtain a single contour.
         cx, cy = obtain_single_contour(b_frame)
         result = obtain_top_contours(b_frame, 10)
-        clien
 
 
         # Check in which quadrant the center of the contour is
