@@ -280,7 +280,7 @@ def show_number_at_position(image, number, cx, cy):
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 0.5
     font_thickness = 1
-    font_color = (255, 0, 0)  # White color for the text
+    font_color = (0, 0, 255)  # White color for the text
 
     cv2.putText(image, str(number), (cx, cy), font, font_scale, font_color, font_thickness, cv2.LINE_AA)
 
