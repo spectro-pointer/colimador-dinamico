@@ -762,7 +762,7 @@ def camera_loop(app):
             # Assuming the first 3 bytes are preamble data, and the rest is 2 floats and 5 bools
             preamble = data[:3]
             joystickX, joystickY = struct.unpack('ff', data[3:11])  # 2 floats
-            joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('?????', data[11:])  # 5 bools
+            joystickBtn, swUp, swDown, swLeft, swRight = struct.unpack('?????', data[11:16])  # 5 bools
 
             # Now you can use the unpacked data with meaningful names for further processing
             print("Preamble:", list(preamble))
