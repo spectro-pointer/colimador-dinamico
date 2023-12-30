@@ -41,6 +41,8 @@ import time
 # Global variable to store the list of all light points seen in the last 30 seconds
 all_light_points = []
 oldTime = time.time()
+lockedName = "ABCD"
+currentlyLocked = False
 
 # Threshold for proximity
 proximity_threshold = 50  # Adjust this value based on your requirements
@@ -341,18 +343,6 @@ def check_quadrant(cx, cy, result):
     #encoded_message = message.encode('utf-8')
 
     # Send the encoded message
-
-    cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
-
-    # Select the top 3 points
-    top_3_points = result[:3]
-
-    # Format the message
-    formatted_message = " ".join([f"Point{i + 1}: {x},{y}" for i, (x, y) in enumerate(top_3_points)])
-
-    cliente.sendto(formatted_message.encode('utf-8'), (pc_servidor_ip, pc_servidor_puerto))
-    cliente.close()
 
     # print(formatted_message)
 
@@ -726,8 +716,6 @@ def camera_loop(app):
         _dummy, b_frame = cv2.threshold(gray_frame,TH, 255, cv2.THRESH_BINARY) ### gustavo
   #      cv2.imshow("threshold", b_frame)  ### gustavo
 
-
-
         # Obtain a single contour.
         cx, cy = obtain_single_contour(b_frame)
         result = obtain_top_contours(b_frame, 10)
@@ -750,6 +738,42 @@ def camera_loop(app):
         # Show the number of all points on the global list using the function show_number_at_position
         for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
             frame = show_number_at_position(frame, name, x, y)
+
+        # For each point on the global list, find the first one that is close to the center of the picture
+        # and save its name in the lockedName variable
+            
+        # If we are currently locked and the lockedName is not in the list anymore, unlock
+        
+        if (not currentlyLocked):
+            for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+                if (abs(x - SIZE[0]/2) <= CENTER_RADIUS and abs(y - SIZE[1]/2) <= CENTER_RADIUS):
+                    lockedName = name
+                    currentlyLocked = True
+                    break
+        else: 
+            if (not lockedName in [name for name, _, _, _, _, _, _, _ in all_light_points]):
+                currentlyLocked = False
+                lockedName = "ABCD"
+
+        # Put in cx and cy the coordinates of the locked point
+        for i, (name, x, y, _, _, _, _, _) in enumerate(all_light_points):
+            if (name == lockedName):
+                cx = x
+                cy = y
+                break
+
+        Tx = int(SIZE[0])
+        Ty = int(SIZE[1])
+
+        payload = create_payload(cx, cy, Tx, Ty, currentlyLocked)
+        
+        # Now you can use the payload as input for the encode function
+        packet_id = 0x01  # Example packet ID
+        encoded_packet = encode(packet_id, payload)
+
+        cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        cliente.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
+        cliente.close()
 
         # # For each point on the global list, show the estimated position using the function estimate_position
         # for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
