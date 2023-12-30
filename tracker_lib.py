@@ -40,7 +40,7 @@ import time
 all_light_points = []
 
 # Threshold for proximity
-proximity_threshold = 5  # Adjust this value based on your requirements
+proximity_threshold = 10  # Adjust this value based on your requirements
 
 
 teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
@@ -475,7 +475,7 @@ def process_and_store_light_points(points):
         found = any(is_point_close(x_existing, y_existing, x, y, proximity_threshold) for x, y in points)
 
         # If the existing point is not found in the new points, check if it's older than 30 seconds
-        if not found and current_time - timestamp_existing <= 30:
+        if not found and current_time - timestamp_existing <= 5:
             updated_light_points.append(existing_point)
 
     # Append new points that are not already in the list
