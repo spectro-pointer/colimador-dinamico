@@ -52,7 +52,6 @@ teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
 teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
 
 pc_servidor_ip = "192.168.1.181"
-pc_servidor_puerto = 8888
 
 UDP_IP = "0.0.0.0"
 UDP_PORT = 8888
@@ -812,6 +811,8 @@ def camera_loop(app):
         packet_id = 0x01  # Example packet ID
         encoded_packet = encode(packet_id, payload)
 
+        
+        client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         client.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
         client.close()
 
