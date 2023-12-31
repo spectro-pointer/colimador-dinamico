@@ -897,6 +897,9 @@ def camera_loop(app):
 
             lst = list()
             lst.append((frame, "frame"))
+            lst.append((b_frame, "threshold"))
+            lst.append((frame2, "frame2"))
+
             #The lock in necessary to not generate conflicts with thread
             with lock:
                 #The left side of the tuple is the original image and the right side the processed one
