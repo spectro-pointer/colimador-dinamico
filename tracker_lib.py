@@ -38,7 +38,7 @@ lock = threading.Lock()
 import socket
 import time
 
-camera_usb = cv2.VideoCapture(1, cv2.CAP_V4L2)
+camera_usb = cv2.VideoCapture(0, cv2.CAP_V4L2)
 camera_usb.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 camera_usb.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -713,7 +713,7 @@ def camera_loop(app):
     record_video = "off"
     while True:
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
-        ret, frame = camera_usb.read()
+        frame = camera_usb.read()
         #frame = capture_frame(camera, stream)
         if frame is None:
             cv2.destroyAllWindows()
