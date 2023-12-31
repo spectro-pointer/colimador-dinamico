@@ -931,7 +931,7 @@ def generate(select_source):#
             if select_source == 'THR':
                 flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
             if select_source == 'EST':
-                flag, encodedImage = cv2.imencode(".jpg", outputFrame[2])
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
 
         # yield the output frame in the byte format
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + encodedImage.tostring() + b'\r\n')
