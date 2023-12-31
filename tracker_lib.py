@@ -248,8 +248,9 @@ def capture_frame(camera, stream):
     :returns: frame"""
     frame = None
     try:
-        camera.capture(stream, format='bgr', use_video_port=True)
-        frame = stream.array
+        #camera.capture(stream, format='bgr', use_video_port=True)
+        #ret, frame = camera.read()
+        #frame = stream.array
     except:
         print("Error with camera.capture")
     return frame
@@ -318,7 +319,7 @@ def camera_test():
     """
     camera, stream = set_up_camera()
     while True:
-        #frame = capture_frame(camera, stream)
+        frame = capture_frame(camera, stream)
         #ret, frame = camera_usb.read()
         if frame is None:
             cv2.destroyAllWindows()
