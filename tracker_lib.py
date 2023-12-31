@@ -711,6 +711,17 @@ def camera_loop(app):
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
         frame = capture_frame(camera, stream)
         frame2 = frame.copy()
+        
+        # Create a white filled rectangle on the frame
+        height, width, _ = frame.shape  # Get frame dimensions
+        start_point = (0, 0)  # Specify the top-left corner of the rectangle
+        end_point = (width, height)  # Specify the bottom-right corner of the rectangle
+        color = (255, 255, 255)  # White color in BGR format
+        thickness = -1  # Use a negative value to indicate a filled rectangle
+
+        # Draw the filled rectangle on the frame
+        cv2.rectangle(frame2, start_point, end_point, color, thickness)
+
         if frame is None:
             cv2.destroyAllWindows()
             break
