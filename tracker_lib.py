@@ -897,8 +897,8 @@ def camera_loop(app):
 
             lst = list()
             lst.append((frame, "frame"))
-            lst.append((b_frame, "threshold"))
-            lst.append((frame2, "frame2"))
+            #lst.append((b_frame, "threshold"))
+            #lst.append((frame2, "frame2"))
 
             #The lock in necessary to not generate conflicts with thread
             with lock:
@@ -931,7 +931,7 @@ def generate(select_source):#
             if select_source == 'THR':
                 flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
             if select_source == 'EST':
-                flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
+                flag, encodedImage = cv2.imencode(".jpg", outputFrame[2])
 
         # yield the output frame in the byte format
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + encodedImage.tostring() + b'\r\n')
@@ -948,6 +948,7 @@ def show_images(lst, size):
    #     cv2.imshow(name, resized_frame)
         cv2.moveWindow(name, int(size[0]*(counter % 4)), int((size[1]+35)*((counter / 4) % 3)))
         counter += 1
+    print(counter)
 
 def fun():
     """
