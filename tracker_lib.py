@@ -488,6 +488,8 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
     thresholdx = constrain(map_range(abs(speed_x1), 0, 200, 25, 25),10,25)
     thresholdy = constrain(map_range(abs(speed_y1), 0, 200, 25, 25),10,25)
 
+    # The allowed position range should be an ellipse with angle the speed vector angle and the major axis the norm of the speed vector and the minor axis a constant
+
     # Check if the new position is close to the estimated position
     position_close = abs(x2 - estimated_x) <= thresholdx and abs(y2 - estimated_y) <= thresholdy
 
@@ -708,6 +710,7 @@ def camera_loop(app):
     while True:
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
         frame = capture_frame(camera, stream)
+        frame2 = frame.copy()
         if frame is None:
             cv2.destroyAllWindows()
             break
@@ -897,7 +900,7 @@ def camera_loop(app):
             #The lock in necessary to not generate conflicts with thread
             with lock:
                 #The left side of the tuple is the original image and the right side the processed one
-                outputFrame = tuple([frame.copy(),b_frame.copy()])
+                outputFrame = tuple([frame.copy(),b_frame.copy(),frame2.copy()])
             show_images(lst, SIZE)
         # cv2.imshow("frame", frame)
 
