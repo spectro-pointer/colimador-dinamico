@@ -944,11 +944,11 @@ def show_images(lst, size):
     """
     counter = 0
     for frame, name in lst:
-        resized_frame = cv2.resize(frame, size)
+        #resized_frame = cv2.resize(frame, size)
    #     cv2.imshow(name, resized_frame)
-        cv2.moveWindow(name, int(size[0]*(counter % 4)), int((size[1]+35)*((counter / 4) % 3)))
+        #cv2.moveWindow(name, int(size[0]*(counter % 4)), int((size[1]+35)*((counter / 4) % 3)))
         counter += 1
-    print(counter)
+    #print(counter)
 
 def fun():
     """
