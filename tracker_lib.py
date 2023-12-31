@@ -905,7 +905,11 @@ def camera_loop(app):
                 #cv2.circle(frame2, (-10, -10), 5, (0, 0, 255), -1) # -1 hace  el relleno del circulo
                 cv2.circle(frame2, (int(deltaX+int(SIZE[0]/2)), int(deltaY+int(SIZE[1]/2))), 2, (0, 0, 255), -1)
                 #cv2.ellipse(frame2, (int(deltaX+int(SIZE[0]/2)), int(deltaY+int(SIZE[1]/2))), 2, (0, 0, 255), -1)
-                cv2.ellipse(frame2, (int(SIZE[0]/2), int(SIZE[1]/2)), (int(abs(speed_x)),int(abs(speed_y))),0,0,0,(255, 0, 0), 2)
+
+                thresholdx = constrain(map_range(abs(speed_x), 0, 200, 10, 50),10,50)
+                thresholdy = constrain(map_range(abs(speed_y), 0, 200, 10, 50),10,50)
+
+                cv2.ellipse(frame2, (int(SIZE[0]/2), int(SIZE[1]/2)), (int(abs(thresholdx)),int(abs(thresholdy))),0,0,0,(255, 0, 0), 2)
 
                 last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
                 break
