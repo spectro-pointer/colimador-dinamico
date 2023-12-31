@@ -50,6 +50,9 @@ swDown = False
 swLeft = False 
 swRight = False
 
+last_estimated_x = 0
+last_estimated_y = 0
+
 # Threshold for proximity
 proximity_threshold = 50  # Adjust this value based on your requirements
 
@@ -699,7 +702,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed, joystickBtn, swUp, swDown, swLeft, swRight
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed, joystickBtn, swUp, swDown, swLeft, swRight, last_estimated_x, last_estimated_y
     update_params(app)
     camera, stream = set_up_camera()
 
@@ -890,6 +893,18 @@ def camera_loop(app):
     
         client.sendto(encoded_packet, (teensy_servidor_ip, teensy_servidor_puerto))
         #client.close()
+
+        # Put in local variables the infos of the locked point 
+        for i, (name, firstSeen, x, y, timestamp, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
+            if (name == lockedName):
+                deltaX = x-last_estimated_x
+                deltaY = y-last_estimated_y
+
+                #draw this as a red point on frame2 but change the coordinate so that the center of the picture is (0,0)
+                cv2.circle(frame2, (int(x-SIZE[0]/2), int(y-SIZE[1]/2)), 5, (0, 0, 255), -1) # -1 hace  el relleno del circulo
+
+                last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
+                break
 
         # # For each point on the global list, show the estimated position using the function estimate_position
         # for i, (x, y, _, speed_x, speed_y, acceleration_x, acceleration_y) in enumerate(all_light_points):
