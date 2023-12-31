@@ -900,10 +900,12 @@ def camera_loop(app):
                 deltaX = x-last_estimated_x
                 deltaY = y-last_estimated_y
 
+
                 #draw this as a red point on frame2 but change the coordinate so that the center of the picture is (0,0)
                 #cv2.circle(frame2, (-10, -10), 5, (0, 0, 255), -1) # -1 hace  el relleno del circulo
                 cv2.circle(frame2, (int(deltaX+int(SIZE[0]/2)), int(deltaY+int(SIZE[1]/2))), 2, (0, 0, 255), -1)
-                cv2.circle(frame2, (int(SIZE[0]/2), int(SIZE[1]/2)), 50, (255, 0, 0), 2)
+                #cv2.ellipse(frame2, (int(deltaX+int(SIZE[0]/2)), int(deltaY+int(SIZE[1]/2))), 2, (0, 0, 255), -1)
+                cv2.ellipse(frame2, (int(SIZE[0]/2), int(SIZE[1]/2)), (speed_x,speed_y),0,0,0,(255, 0, 0), 2)
 
                 last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
                 break
