@@ -38,10 +38,6 @@ lock = threading.Lock()
 import socket
 import time
 
-camera_usb = cv2.VideoCapture(1, cv2.CAP_V4L2)
-camera_usb.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-camera_usb.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-
 # Global variable to store the list of all light points seen in the last 30 seconds
 all_light_points = []
 oldTime = time.time()
@@ -232,10 +228,9 @@ def set_up_camera():
     print("Press 2 to exit, 3 to stop, 4 to continue")
     try:
         camera = PiCamera()
-        camera.roi (0.5,0.5,0.25,0.25)
+#        camera.roi (0.5,0.5,0.25,0.25)
         stream = PiRGBArray(camera, size=SIZE)
         camera,stream = camera_attr(camera,stream)
-        #ret, stream = camera_usb.read()
     except:
         print("Error with Raspberry Pi Camera")
         sys.exit(0)
@@ -248,9 +243,8 @@ def capture_frame(camera, stream):
     :returns: frame"""
     frame = None
     try:
-        #camera.capture(stream, format='bgr', use_video_port=True)
-        #ret, frame = camera.read()
-        #frame = stream.array
+        camera.capture(stream, format='bgr', use_video_port=True)
+        frame = stream.array
     except:
         print("Error with camera.capture")
     return frame
@@ -320,7 +314,6 @@ def camera_test():
     camera, stream = set_up_camera()
     while True:
         frame = capture_frame(camera, stream)
-        #ret, frame = camera_usb.read()
         if frame is None:
             cv2.destroyAllWindows()
             break
@@ -704,7 +697,7 @@ def camera_loop(app):
     """
     Main Loop where the Image processing takes part.
     """
-    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed, joystickBtn, swUp, swDown, swLeft, swRight, camera_usb
+    global contour_appeared, contour_centered, record_video, outputFrame, lock, TH,camera,stream, oldTime, lockedName, currentlyLocked, isButtonPressed, joystickBtn, swUp, swDown, swLeft, swRight
     update_params(app)
     camera, stream = set_up_camera()
 
@@ -714,8 +707,7 @@ def camera_loop(app):
     record_video = "off"
     while True:
         # TH = cv2.getTrackbarPos('TH','threshold') ### gustavo
-        ret, frame = camera_usb.read()
-        #frame = capture_frame(camera, stream)
+        frame = capture_frame(camera, stream)
         if frame is None:
             cv2.destroyAllWindows()
             break
