@@ -930,7 +930,7 @@ def generate(select_source):#
                 flag, encodedImage = cv2.imencode(".jpg", outputFrame[0])
             if select_source == 'THR':
                 flag, encodedImage = cv2.imencode(".jpg", outputFrame[1])
-            if select_source == 'EST':
+            if select_source == 'ELI':
                 flag, encodedImage = cv2.imencode(".jpg", outputFrame[2])
 
         # yield the output frame in the byte format

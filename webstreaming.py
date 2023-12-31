@@ -48,6 +48,12 @@ def create_app(configfile=None):
         # return the response generated along with the specific media
         # type (mime type)
         return Response(generate('THR'),mimetype = "multipart/x-mixed-replace; boundary=frame")
+    
+    @app.route("/eli_feed")
+    def est_feed():
+        # return the response generated along with the specific media
+        # type (mime type)
+        return Response(generate('ELI'),mimetype = "multipart/x-mixed-replace; boundary=frame")
 
     @app.route("/config", methods=["GET","POST"])
     def set_config():
