@@ -494,7 +494,7 @@ def is_point_close_with_motion_estimation(x1, y1, x2, y2, speed_x1, speed_y1, ac
     # The allowed position range should be an ellipse with angle the speed vector angle and the major axis the norm of the speed vector and the minor axis a constant
 
     # Check if the new position is close to the estimated position
-    position_close = abs(x2 - estimated_x) <= thresholdx and abs(y2 - estimated_y) <= thresholdy
+    position_close = abs(x2 - estimated_x) <= threshold and abs(y2 - estimated_y) <= threshold
 
     return position_close
 
@@ -902,7 +902,8 @@ def camera_loop(app):
 
                 #draw this as a red point on frame2 but change the coordinate so that the center of the picture is (0,0)
                 #cv2.circle(frame2, (-10, -10), 5, (0, 0, 255), -1) # -1 hace  el relleno del circulo
-                cv2.circle(frame2, (x, y), 10, (0, 0, 255), -1)
+                cv2.circle(frame2, (x, y), 2, (0, 0, 255), -1)
+                cv2.circle(frame2, (0, 0), 50, (255, 0, 0), 2)
 
                 last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
                 break
