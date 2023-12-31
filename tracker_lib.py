@@ -905,7 +905,7 @@ def camera_loop(app):
                 cv2.circle(frame2, (int(deltaX+int(SIZE[0]/2)), int(deltaY+int(SIZE[1]/2))), 2, (0, 0, 255), -1)
                 cv2.circle(frame2, (int(SIZE[0]/2), int(SIZE[1]/2)), 50, (255, 0, 0), 2)
 
-                last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, acceleration_x, acceleration_y, oldTime, time.time())
+                last_estimated_x, last_estimated_y = estimate_position((x, y), speed_x, speed_y, 0, 0, oldTime, time.time())
                 break
 
         # # For each point on the global list, show the estimated position using the function estimate_position
