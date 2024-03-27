@@ -57,19 +57,19 @@ last_estimated_y = 0
 proximity_threshold = 50  # Adjust this value based on your requirements
 
 
-teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
-teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
+#teensy_servidor_ip = "192.168.1.100"  # Dirección IP del Teensy servidor
+#teensy_servidor_puerto = 8888  # Puerto del Teensy servidor
 
-pc_servidor_ip = "192.168.1.181"
+#pc_servidor_ip = "192.168.1.181"
 
-UDP_IP = "192.168.1.114"
-UDP_PORT = 8888
+#UDP_IP = "192.168.1.114"
+#UDP_PORT = 8888
 
-client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-client.bind((UDP_IP, UDP_PORT))
+#client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#client.bind((UDP_IP, UDP_PORT))
 
 # Set the socket to non-blocking mode
-client.setblocking(0)
+#client.setblocking(0)
 
 def nothing(a):
     pass
@@ -82,10 +82,10 @@ def nothing(a):
 TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
 upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
 
-#try:
-#    arduino = serial.Serial('/dev/ttyACM0', 115200) ### gustavo
-#except:
-#    arduino = serial.Serial('/dev/ttyACM1', 115200) ### gustavo
+try:
+    arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
+except:
+    arduino = serial.Serial('/dev/ttyACM1', 9600) ### gustavo
 
 
 # FOURCC = cv2.cv.CV_FOURCC(*'XVID') #Deprecated
@@ -371,11 +371,11 @@ def check_quadrant(cx, cy, result):
         led_action(available_leds["LED_G_UP"], "off")
         led_action(available_leds["LED_G_DOWN"], "off")
         return
-#    returnString ="{} , {}".format(cx,cy)  ### gustavo
+    returnString ="{} , {}".format(cx,cy)  ### gustavo
     result = ""
-#    print(returnString)                    ### gustavo
+    print(returnString)                    ### gustavo
 
-#    arduino.write(returnString.encode() + '\n'.encode())    ### gustavo
+    arduino.write(returnString.encode() + '\n'.encode())    ### gustavo
     # When no contour has been detected:
     # It turns on LED_YELLOW and returns ""
     if cx < 0 or cy < 0:
