@@ -79,8 +79,8 @@ def nothing(a):
 #cv2.createTrackbar('TH','threshold',50,255,nothing)  ### gustavo
  
 #while not key == ord('q'):
-TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
-upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
+#TH = cv2.getTrackbarPos('TH','threshold')        ### gustavo 
+#upper_white = np.array([TH], dtype=np.uint8)  ### gustavo
 
 try:
     arduino = serial.Serial('/dev/ttyACM0', 9600) ### gustavo
